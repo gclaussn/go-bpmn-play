@@ -1,4 +1,5 @@
 *.exe
 
+openapi.yaml
 public/play.wasm
 public/wasm_exec.js
