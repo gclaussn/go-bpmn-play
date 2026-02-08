@@ -12,6 +12,12 @@ GOOS=js GOARCH=wasm go build -o ./public/play.wasm ./cmd/play
 cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ./public/
 ```
 
+Start the development server:
+
+```sh
+npm run dev
+```
+
 ## Generate
 
 For the generation of the Vue [components](src/components/openapi/) from the OpenAPI documentation, the following steps need to be performed.

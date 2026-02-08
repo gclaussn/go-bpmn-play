@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+.description-code {
+  padding: 0px 5px;
+  border: 1px solid rgba(38, 50, 56, 0.1);
+  border-radius: 2px;
+  color: rgb(229, 57, 53);
+  background-color: rgba(38, 50, 56, 0.05);
+  font-family: Courier, monospace;
+  word-break: break-word;
+}
+
+.viewer-annotation {
+  width: 30px;
+  height: 30px;
+}
+
+.viewer-marker-COMPLETED:not(.djs-connection) .djs-visual > :first-child {fill: var(--color-green-100) !important}
+.viewer-marker-CREATED:not(.djs-connection) .djs-visual > :first-child {fill: var(--color-gray-300) !important}
+.viewer-marker-STARTED:not(.djs-connection) .djs-visual > :first-child {fill: var(--color-blue-200) !important}
+.viewer-marker-SUSPENDED:not(.djs-connection) .djs-visual > :first-child {fill: var(--color-amber-100) !important}
