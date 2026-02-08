@@ -1,0 +1,4 @@
+*.exe
+
+public/play.wasm
+public/wasm_exec.js
