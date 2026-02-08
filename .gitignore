@@ -1,5 +1,6 @@
 *.exe
 
+dist/
 node_modules/
 openapi.yaml
 public/play.wasm

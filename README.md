@@ -43,3 +43,17 @@ go run cmd/generate-components/main.go \
 -source-path openapi.yaml \
 -output-path ./src/components/openapi
 ```
+
+## Build
+
+```sh
+bash ./.github/workflows/build.sh
+```
+
+## Preview
+
+To preview the built app, run:
+
+```sh
+npm run preview
+```
