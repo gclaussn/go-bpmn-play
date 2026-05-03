@@ -82,7 +82,7 @@ watch(operations, () => {
   for (const [bpmnElementId, annotation] of Object.entries(overlay)) {
     overlays.add(bpmnElementId, {
       html: `<div class="viewer-annotation inline-block rounded-full border-1 ${annotation.style}" title="${annotation.title}"></div>`,
-      position: { left: -15, bottom: 15 }
+      position: { left: -17, bottom: 13 }
     })
   }
 
@@ -97,8 +97,8 @@ function determineMarkers(elementInstances) {
   if (elementInstances[0].state == "COMPLETED") {
     const results = {}
     for (let i = 1; i < elementInstances.length; i++) {
-      const { bpmnElementId, state } = elementInstances[i]
-      if (state == "COMPLETED") {
+      const { bpmnElementId, bpmnElementType, state } = elementInstances[i]
+      if (state == "COMPLETED" && bpmnElementType != "SUB_PROCESS") {
         results[bpmnElementId] = "viewer-marker-COMPLETED"
       }
     }
@@ -106,11 +106,14 @@ function determineMarkers(elementInstances) {
   }
 
   return elementInstances.reduce((results, elementInstance) => {
-    const { bpmnElementId, parentId, state } = elementInstance
+    const { bpmnElementId, bpmnElementType, parentId, state } = elementInstance
     if (!parentId) {
       return results
     }
     if (state != "CREATED" && state != "STARTED" && state != "SUSPENDED") {
+      return results
+    }
+    if (bpmnElementType == "SUB_PROCESS" && state != "CREATED") {
       return results
     }
 
