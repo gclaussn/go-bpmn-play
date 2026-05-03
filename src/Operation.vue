@@ -51,6 +51,11 @@ function choose() {
   })
 }
 
+function next() {
+  const index = operations.getSelectedIndex()
+  operations.setSelected(index + 1)
+}
+
 const operation = computed(() => {
   const selected = operations.getSelected()
 
@@ -118,7 +123,24 @@ const operation = computed(() => {
       ></component>
     </div>
 
-    <PlayRequest  v-if="tab == 'request'"  :operation="operation" />
-    <PlayResponse v-if="tab == 'response'" :operation="operation" />
+    <PlayRequest v-if="tab == 'request'" :operation="operation" />
+
+    <div v-if="tab == 'response'">
+      <PlayResponse :operation="operation" />
+
+      <div v-if="operation.is2xx" class="flex mt-4 justify-center">
+        <button
+          class="
+            px-3 py-1.5 bg-blue-600 rounded-md text-white cursor-pointer
+            hover:bg-blue-700
+          "
+          title="Next operation"
+          type="button"
+          @click="next"
+        >
+          Next
+        </button>
+      </div>
+    </div>
   </div>
 </template>

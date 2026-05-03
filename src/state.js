@@ -27,7 +27,7 @@ const operations = reactive({
 
   add(operation) {
     this._array.push(operation)
-    this._index = this._array.length - 1
+    this._index = this._index == -1 ? 0 : this._index // select initial operation or do nothing
   },
 
   addEmpty() {
