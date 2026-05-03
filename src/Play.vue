@@ -13,7 +13,7 @@ const wasmLoaded = ref(false)
 const wasmError = ref(null)
 
 watch(bpmnProcessId, () => {
-  const go = new Go();
+  const go = new Go()
 
   WebAssembly.instantiateStreaming(fetch(wasm), go.importObject).then((result) => {
     go.run(result.instance)
@@ -30,7 +30,7 @@ watch(bpmnProcessId, () => {
     })
   }).catch(err => {
     wasmError.value = err
-  });
+  })
 })
 
 const showOrChoose = computed(() => {
@@ -53,11 +53,11 @@ const showOrChoose = computed(() => {
   <div class="h-screen grid" :class="{ 'grid-cols-2': !viewerExpanded, 'grid-cols-[90%_10%]': viewerExpanded }">
     <Viewer />
 
-    <div v-if="!wasmLoaded && !wasmError" class="h-screen flex flex-col justify-center items-center">
+    <div v-if="!wasmError && !wasmLoaded" class="h-screen flex flex-col justify-center items-center">
       <span class="text-gray-700">Loading WebAssembly {{ wasm }}...</span>
     </div>
 
-    <div v-if="!wasmError" class="h-screen grid" :class="{ 'grid-cols-[20%_80%]': !viewerExpanded }">
+    <div v-if="!wasmError && wasmLoaded" class="h-screen grid" :class="{ 'grid-cols-[20%_80%]': !viewerExpanded }">
       <div class="h-screen flex flex-col justify-center bg-gray-50" v-if="showOrChoose">
         <OperationList />
       </div>

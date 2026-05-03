@@ -29,7 +29,7 @@ func main() {
 
 func execute(this js.Value, args []js.Value) any {
 	if len(args) == 0 {
-		setError(errors.New("failed to execute request: expected exactly one argument"))
+		setError(errors.New("failed to execute request: expected JSON marshaled request"))
 		return nil
 	}
 

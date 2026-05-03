@@ -105,15 +105,6 @@ function _processResponse(response, request, selectedIndex) {
 
     if (startEventTypeCount > 1) {
       operations.addEmpty()
-    } else if (noneStartEvent) {
-      operations.add({
-        component: "CreateProcessInstance",
-        data: {
-          bpmnProcessId: body.bpmnProcessId,
-          version: body.version,
-          workerId: body.createdBy
-        },
-      })
     } else if (messageStartEvents.length != 0) {
       const operation = newOperation("SendMessage")
       operation.data.correlationKey = "any key"
@@ -127,6 +118,15 @@ function _processResponse(response, request, selectedIndex) {
       const operation = newOperation("SetTime")
       operation.data.time = tasks[0].dueAt
       operations.add(operation)
+    } else if (noneStartEvent || startEventTypeCount == 0) {
+      operations.add({
+        component: "CreateProcessInstance",
+        data: {
+          bpmnProcessId: body.bpmnProcessId,
+          version: body.version,
+          workerId: body.createdBy
+        },
+      })
     }
   } else if (request.operationId == "createProcessInstance") {
     processInstance.set(body.partition, body.id, body.processId)

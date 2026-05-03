@@ -12,7 +12,11 @@ import (
 )
 
 func New() (*Play, error) {
-	e, err := mem.New()
+	e, err := mem.New(func(o *mem.Options) {
+		o.Common.OnTaskExecutionFailure = func(task engine.Task, err error) {
+			fmt.Printf("failed to execute task %s: %s", task, err.Error())
+		}
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create mem engine: %v", err)
 	}
