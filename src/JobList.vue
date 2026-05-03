@@ -1,9 +1,5 @@
 <script setup>
-import { computed } from "vue"
-
-import { operations, viewerExpanded } from "./state.js"
-
-import ExpandViewerButton from "./components/ExpandViewerButton.vue";
+import { viewerExpanded } from "./state.js"
 
 const columns = [
   "ID",
@@ -37,29 +33,11 @@ const stateClasses = {
   "LOCKED": ["bg-cyan-100", "text-cyan-700"]
 }
 
-const results = computed(() => {
-  let operation = operations.getSelected()
-  if (!operation.is2xx) {
-    // if current operation has not been successfully executed yet, take previous one
-    operation = operations.get(operations.getSelectedIndex() - 1)
-  }
-  return operation.jobs
-})
+const { results } = defineProps(["results"])
 </script>
 
 <template>
-  <div class="relative">
-    <div class="mt-2 mb-2 text-gray-700 text-center">
-      <span v-if="results">Count: {{ results.length }}</span>
-      <span v-else>No jobs available!</span>
-    </div>
-
-    <div class="absolute right-0 top-0 pr-5">
-      <ExpandViewerButton />
-    </div>
-  </div>
-
-  <div v-if="results" class="p-5">
+  <div v-if="results" class="pl-5 pr-5">
     <table v-if="!viewerExpanded" class="min-w-full">
       <colgroup>
         <col span="1" style="width: 6%;" />
@@ -69,10 +47,10 @@ const results = computed(() => {
         <col span="1" style="width: 21%;" />
         <col span="1" style="width: 21%;" />
       </colgroup>
-      <thead>
+      <thead class="sticky top-0 bg-white">
         <tr>
-          <th v-for="column in columns" :key="column" class="p-2 border-y border-gray-100">
-            <div class="text-left text-sm text-gray-900 opacity-70 font-normal font-sans">
+          <th v-for="column in columns" :key="column">
+            <div class="p-2 text-left text-sm text-gray-900 opacity-70 font-normal font-sans border-y border-gray-100">
               {{ column }}
             </div>
           </th>
@@ -110,10 +88,10 @@ const results = computed(() => {
         <col span="1" style="width: 11%;" />
         <col span="1" style="width: 11%;" />
       </colgroup>
-      <thead>
+      <thead class="sticky top-0 bg-white">
         <tr>
-          <th v-for="column in expandedColumns" :key="column" class="p-2 border-y border-gray-100">
-            <div class="text-left text-sm text-gray-900 opacity-70 font-normal font-sans">
+          <th v-for="column in expandedColumns" :key="column">
+            <div class="p-2 text-left text-sm text-gray-900 opacity-70 font-normal font-sans border-y border-gray-100">
               {{ column }}
             </div>
           </th>
