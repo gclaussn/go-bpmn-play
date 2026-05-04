@@ -28,6 +28,12 @@ watch(bpmnProcessId, () => {
         workerId: "play"
       },
     })
+
+    // display confirmation modal before closing window
+    window.addEventListener("beforeunload", (event) => {
+      event.preventDefault()
+      event.returnValue = ""
+    })
   }).catch(err => {
     wasmError.value = err
   })
