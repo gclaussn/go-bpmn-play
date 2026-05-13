@@ -6,13 +6,10 @@ import { newOperation } from "./app.js"
 
 import { descriptions, names } from "./components/openapi/operation/index.js"
 
-const excluded = [
-  "CreateProcess"
-]
-
 const common = [
-  "CreateProcessInstance",
   "CompleteJob",
+  "CreateProcess",
+  "CreateProcessInstance",
   "ExecuteTasks",
   "LockJobs",
   "ResolveIncident",
@@ -37,10 +34,6 @@ const querySection = newSection("QUERY")
 const otherSection = newSection("OTHER")
 
 for (const [component, name] of Object.entries(names)) {
-  if (excluded.includes(component)) {
-    continue
-  }
-
   let section
   if (common.includes(component)) {
     section = commonSection

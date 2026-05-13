@@ -232,6 +232,11 @@ function _newData(component) {
       },
       workerId: "play"
     }
+  } else if (component == "CreateProcess") {
+    return {
+      version: "1",
+      workerId: "play"
+    }
   } else if (component == "ExecuteTasks") {
     return {
       partition: partition,

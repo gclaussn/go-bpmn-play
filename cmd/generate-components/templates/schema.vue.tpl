@@ -63,16 +63,27 @@ const model = defineModel()
     :required="{{$property.Required}}"
     v-model="model.{{$property.Name}}"
   />
+  {{- else if eq $property.Name "bpmnXml"}}
+  <StringProperty v-if="model.bpmnXml.length != 0"
+    description="{{$property.Description}}"
+    name="{{$property.Name}}"
+    placeholder="{{placeholder $property.Type $property.Format}}"
+    :disabled="true"
+    :required="{{$property.Required}}"
+    v-model="model.bpmnXml"
+  />
+  <FileProperty v-if="model.bpmnXml.length == 0"
+    description="{{$property.Description}}"
+    name="{{$property.Name}}"
+    :required="{{$property.Required}}"
+    v-model="model.bpmnXml"
+  />
   {{- else}}
   <StringProperty
     description="{{$property.Description}}"
     name="{{$property.Name}}"
     placeholder="{{placeholder $property.Type $property.Format}}"
-    {{- if eq $property.Name "bpmnXml"}}
-    :disabled="true"
-    {{- else}}
     :disabled="disabled"
-    {{- end}}
     :required="{{$property.Required}}"
     {{- if eq $property.Type "integer"}}
     v-model.number="model.{{$property.Name}}"

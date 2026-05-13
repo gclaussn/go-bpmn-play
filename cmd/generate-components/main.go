@@ -464,6 +464,11 @@ func getSchemaImports(schema *VueSchema) []VueImport {
 		case "string", "integer":
 			name := "StringProperty"
 			importMap[name] = "../" + name
+
+			if property.Name == "bpmnXml" {
+				name := "FileProperty"
+				importMap[name] = "../" + name
+			}
 		case "array":
 			if property.SchemaId != "" {
 				name := property.SchemaId + "List"
