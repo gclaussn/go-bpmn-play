@@ -44,6 +44,12 @@ go run cmd/generate-components/main.go \
 -output-path ./src/components/openapi
 ```
 
+## Test
+
+```sh
+node --test
+```
+
 ## Build
 
 ```sh

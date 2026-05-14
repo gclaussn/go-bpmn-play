@@ -3,7 +3,7 @@ import { computed, ref } from "vue"
 
 import { operations } from "./state.js"
 
-import BpmnViewer from "./BpmnViewer.vue"
+import BpmnViewer from "./bpmn-viewer/BpmnViewer.vue"
 import ElementInstanceList from "./ElementInstanceList.vue"
 import ExpandViewerButton from "./components/ExpandViewerButton.vue";
 import JobList from "./JobList.vue"
