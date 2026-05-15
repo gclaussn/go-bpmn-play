@@ -52,6 +52,15 @@ const operations = reactive({
     return this._index
   },
 
+  /**
+   * Determines if the selected operation provides the engine's latest state (regarding element instances, jobs and tasks).
+   * 
+   * @returns true, if the selected or the next operation have not received a response with status code 2xx yet. Otherwise false.
+   */
+  isLatest() {
+    return !this._array[this._index].is2xx || !this._array[this._index + 1].is2xx
+  },
+
   patch(index, patch) {
     Object.assign(this._array[index], patch)
   },

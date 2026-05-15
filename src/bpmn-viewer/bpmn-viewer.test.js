@@ -1,5 +1,5 @@
 import { describe, it } from "node:test"
-import assert from "node:assert";
+import assert from "node:assert"
 
 import { collectJobs, collectMarkers, collectTasks } from "./bpmn-viewer.js"
 
@@ -40,16 +40,16 @@ describe("bpmn-viewer", () => {
 
       assert.equal(Object.keys(results).length, 4)
 
-      assert.ok(results["a"].style)
+      assert.ok(results["a"].job)
       assert.equal(results["a"].title, "Job 2026-01-01/1, Type: A, State: CAUSED_INCIDENT")
 
-      assert.ok(results["b"].style)
+      assert.ok(results["b"].job)
       assert.equal(results["b"].title, "Job 2026-01-02/2, Type: B, State: CREATED")
 
-      assert.ok(results["c"].style)
+      assert.ok(results["c"].job)
       assert.equal(results["c"].title, "Job 2026-01-03/3, Type: C, State: DUE")
 
-      assert.ok(results["d"].style)
+      assert.ok(results["d"].job)
       assert.equal(results["d"].title, "Job 2026-01-04/4, Type: D, State: LOCKED")
     })
   })
@@ -103,7 +103,7 @@ describe("bpmn-viewer", () => {
 
     it("should mark all completed when process instance completed, but exclude sub-processes", () => {
       const results = collectMarkers([
-        {bpmnElementId: "a", bpmnElementType: "PROCESS", state: "COMPLETED"},
+        {bpmnElementId: "a", bpmnElementType: "PROCESS", endedAt: "2026-05-15T16:22:49.44Z"},
         {bpmnElementId: "b", bpmnElementType: "B", state: "COMPLETED"},
         {bpmnElementId: "c", bpmnElementType: "SUB_PROCESS", state: "COMPLETED"},
         {bpmnElementId: "d", bpmnElementType: "D", state: "CANCELED"},
@@ -151,16 +151,16 @@ describe("bpmn-viewer", () => {
 
       assert.equal(Object.keys(results).length, 4)
 
-      assert.ok(results["a"].style)
+      assert.ok(results["a"].task)
       assert.equal(results["a"].title, "Task 2026-01-01/1, Type: A, State: CAUSED_INCIDENT")
 
-      assert.ok(results["b"].style)
+      assert.ok(results["b"].task)
       assert.equal(results["b"].title, "Task 2026-01-02/2, Type: B, State: CREATED")
 
-      assert.ok(results["c"].style)
+      assert.ok(results["c"].task)
       assert.equal(results["c"].title, "Task 2026-01-03/3, Type: C, State: DUE")
 
-      assert.ok(results["d"].style)
+      assert.ok(results["d"].task)
       assert.equal(results["d"].title, "Task 2026-01-04/4, Type: D, State: LOCKED")
     })
   })
