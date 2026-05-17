@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1or0k0q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.13.2">
+  <bpmn:process id="example2" isExecutable="true">
+    <bpmn:startEvent id="startEvent" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="startEvent" targetRef="subProcess" />
+    <bpmn:subProcess id="subProcess">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:startEvent id="subProcessStartEvent">
+        <bpmn:outgoing>f2</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="f2" sourceRef="subProcessStartEvent" targetRef="doX" />
+      <bpmn:serviceTask id="doX" name="Do X">
+        <bpmn:incoming>f2</bpmn:incoming>
+        <bpmn:outgoing>f3</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="f3" sourceRef="doX" targetRef="escalationFork" />
+      <bpmn:exclusiveGateway id="escalationFork" name="Escalate?" default="f4">
+        <bpmn:incoming>f3</bpmn:incoming>
+        <bpmn:outgoing>f4</bpmn:outgoing>
+        <bpmn:outgoing>f5</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="f4" name="No" sourceRef="escalationFork" targetRef="subProcessEndEvent" />
+      <bpmn:endEvent id="subProcessEndEvent">
+        <bpmn:incoming>f4</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="f5" name="Yes" sourceRef="escalationFork" targetRef="escalationEndEvent" />
+      <bpmn:endEvent id="escalationEndEvent">
+        <bpmn:incoming>f5</bpmn:incoming>
+        <bpmn:escalationEventDefinition id="escalationEndEventDefinition" escalationRef="exampleEscalation" />
+      </bpmn:endEvent>
+      <bpmn:outgoing>f6</bpmn:outgoing>
+    </bpmn:subProcess>
+    <bpmn:endEvent id="endEvent" name="End">
+      <bpmn:incoming>f6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f6" sourceRef="subProcess" targetRef="endEvent" />
+    <bpmn:boundaryEvent id="escalationBoundaryEvent" attachedToRef="subProcess">
+      <bpmn:outgoing>f7</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="escalationBoundaryEventDefinition" escalationRef="exampleEscalation" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="messageBoundaryEvent" attachedToRef="subProcess">
+      <bpmn:outgoing>f8</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="messageBoundaryEventDefinition" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="signalBoundaryEvent" attachedToRef="subProcess">
+      <bpmn:outgoing>f9</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="signalBoundaryEventDefinition" signalRef="exampleSignal" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="timerBoundaryEvent" attachedToRef="subProcess">
+      <bpmn:outgoing>f10</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="timerBoundaryEventDefinition" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="f8" sourceRef="messageBoundaryEvent" targetRef="alternativeJoin" />
+    <bpmn:sequenceFlow id="f9" sourceRef="signalBoundaryEvent" targetRef="alternativeJoin" />
+    <bpmn:sequenceFlow id="f10" sourceRef="timerBoundaryEvent" targetRef="alternativeJoin" />
+    <bpmn:sequenceFlow id="f7" sourceRef="escalationBoundaryEvent" targetRef="alternativeJoin" />
+    <bpmn:exclusiveGateway id="alternativeJoin">
+      <bpmn:incoming>f7</bpmn:incoming>
+      <bpmn:incoming>f8</bpmn:incoming>
+      <bpmn:incoming>f9</bpmn:incoming>
+      <bpmn:incoming>f10</bpmn:incoming>
+      <bpmn:outgoing>f11</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="f11" sourceRef="alternativeJoin" targetRef="doY" />
+    <bpmn:serviceTask id="doY" name="Do Y">
+      <bpmn:incoming>f11</bpmn:incoming>
+      <bpmn:outgoing>f12</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="f12" sourceRef="doY" targetRef="alternativeEndEvent" />
+    <bpmn:endEvent id="alternativeEndEvent" name="Alternative end">
+      <bpmn:incoming>f12</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:escalation id="exampleEscalation" name="Example" escalationCode="example" />
+  <bpmn:signal id="exampleSignal" name="example" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1ny9c8b">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="startEvent">
+        <dc:Bounds x="156" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="162" y="205" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="alternativeJoin_di" bpmnElement="alternativeJoin" isMarkerVisible="true">
+        <dc:Bounds x="525" y="415" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="alternativeEndEvent_di" bpmnElement="alternativeEndEvent">
+        <dc:Bounds x="792" y="422" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="774" y="465" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endEvent_di" bpmnElement="endEvent">
+        <dc:Bounds x="792" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="800" y="205" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vsgskf_di" bpmnElement="doY">
+        <dc:Bounds x="630" y="400" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="subProcess_di" bpmnElement="subProcess" isExpanded="true">
+        <dc:Bounds x="240" y="80" width="470" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="subProcessStartEvent_di" bpmnElement="subProcessStartEvent">
+        <dc:Bounds x="280" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kjbrav_di" bpmnElement="doX">
+        <dc:Bounds x="370" y="140" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="escalationFork_di" bpmnElement="escalationFork" isMarkerVisible="true">
+        <dc:Bounds x="525" y="155" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="526" y="125" width="49" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="subProcessEndEvent_di" bpmnElement="subProcessEndEvent">
+        <dc:Bounds x="632" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0v0mb70_di" bpmnElement="escalationEndEvent">
+        <dc:Bounds x="532" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="316" y="180" />
+        <di:waypoint x="370" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="470" y="180" />
+        <di:waypoint x="525" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
+        <di:waypoint x="575" y="180" />
+        <di:waypoint x="632" y="180" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="596" y="162" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5">
+        <di:waypoint x="550" y="205" />
+        <di:waypoint x="550" y="272" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="556" y="236" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1xdvysk_di" bpmnElement="escalationBoundaryEvent">
+        <dc:Bounds x="532" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1yhlghd_di" bpmnElement="messageBoundaryEvent">
+        <dc:Bounds x="280" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0upgco2_di" bpmnElement="signalBoundaryEvent">
+        <dc:Bounds x="362" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1x564lg_di" bpmnElement="timerBoundaryEvent">
+        <dc:Bounds x="442" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="192" y="180" />
+        <di:waypoint x="240" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6">
+        <di:waypoint x="710" y="180" />
+        <di:waypoint x="792" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f11_di" bpmnElement="f11">
+        <di:waypoint x="575" y="440" />
+        <di:waypoint x="630" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f12_di" bpmnElement="f12">
+        <di:waypoint x="730" y="440" />
+        <di:waypoint x="792" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8">
+        <di:waypoint x="298" y="368" />
+        <di:waypoint x="298" y="440" />
+        <di:waypoint x="525" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9">
+        <di:waypoint x="380" y="368" />
+        <di:waypoint x="380" y="440" />
+        <di:waypoint x="525" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f10_di" bpmnElement="f10">
+        <di:waypoint x="460" y="368" />
+        <di:waypoint x="460" y="440" />
+        <di:waypoint x="525" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7">
+        <di:waypoint x="550" y="368" />
+        <di:waypoint x="550" y="415" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

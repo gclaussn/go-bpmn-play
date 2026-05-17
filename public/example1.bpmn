@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_19pqp66" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.13.2">
+  <bpmn:process id="example1" isExecutable="true">
+    <bpmn:startEvent id="startEvent" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="startEvent" targetRef="parallelFork" />
+    <bpmn:parallelGateway id="parallelFork">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="f2" sourceRef="parallelFork" targetRef="doX" />
+    <bpmn:sequenceFlow id="f3" sourceRef="parallelFork" targetRef="doY" />
+    <bpmn:serviceTask id="doX" name="Do X">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="doY" name="Do Y">
+      <bpmn:incoming>f3</bpmn:incoming>
+      <bpmn:outgoing>f5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="f4" sourceRef="doX" targetRef="parallelJoin" />
+    <bpmn:sequenceFlow id="f5" sourceRef="doY" targetRef="parallelJoin" />
+    <bpmn:parallelGateway id="parallelJoin">
+      <bpmn:incoming>f4</bpmn:incoming>
+      <bpmn:incoming>f5</bpmn:incoming>
+      <bpmn:outgoing>f6</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="f6" sourceRef="parallelJoin" targetRef="endEvent" />
+    <bpmn:endEvent id="endEvent" name="End">
+      <bpmn:incoming>f6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="errorBoundaryEvent" attachedToRef="doX">
+      <bpmn:outgoing>f7</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="errorBoundaryEventDefinition" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="f7" sourceRef="errorBoundaryEvent" targetRef="doZ" />
+    <bpmn:serviceTask id="doZ" name="Do Z">
+      <bpmn:incoming>f7</bpmn:incoming>
+      <bpmn:outgoing>f8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="f8" sourceRef="doZ" targetRef="errorEnd" />
+    <bpmn:endEvent id="errorEnd" name="Error end">
+      <bpmn:incoming>f8</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="example1">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="startEvent">
+        <dc:Bounds x="156" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="162" y="355" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1nwyqbt_di" bpmnElement="doX">
+        <dc:Bounds x="350" y="200" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02bq1rb_di" bpmnElement="doY">
+        <dc:Bounds x="350" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0jt5ou7_di" bpmnElement="parallelFork">
+        <dc:Bounds x="245" y="305" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_03fae4v_di" bpmnElement="parallelJoin">
+        <dc:Bounds x="495" y="305" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ed88gj_di" bpmnElement="doZ">
+        <dc:Bounds x="470" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="errorEnd_di" bpmnElement="errorEnd">
+        <dc:Bounds x="622" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="617" y="145" width="46" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endEvent_di" bpmnElement="endEvent">
+        <dc:Bounds x="622" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="630" y="355" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qlmrh6_di" bpmnElement="errorBoundaryEvent">
+        <dc:Bounds x="382" y="182" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="192" y="330" />
+        <di:waypoint x="245" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="270" y="305" />
+        <di:waypoint x="270" y="240" />
+        <di:waypoint x="350" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
+        <di:waypoint x="450" y="240" />
+        <di:waypoint x="520" y="240" />
+        <di:waypoint x="520" y="305" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="270" y="355" />
+        <di:waypoint x="270" y="420" />
+        <di:waypoint x="350" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5">
+        <di:waypoint x="450" y="420" />
+        <di:waypoint x="520" y="420" />
+        <di:waypoint x="520" y="355" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6">
+        <di:waypoint x="545" y="330" />
+        <di:waypoint x="622" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7">
+        <di:waypoint x="400" y="182" />
+        <di:waypoint x="400" y="120" />
+        <di:waypoint x="470" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8">
+        <di:waypoint x="570" y="120" />
+        <di:waypoint x="622" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

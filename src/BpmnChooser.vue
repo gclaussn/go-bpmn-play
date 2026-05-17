@@ -26,7 +26,7 @@ onMounted(() => {
 
 <template>
   <div class="h-screen flex flex-col justify-center items-center">
-    <div class="grid grid-cols-1 mb-24 text-center">
+    <div class="grid grid-cols-1 text-center">
       <p>
         <a href="https://github.com/gclaussn/go-bpmn-play" target="_blank" class="text-blue-600">go-bpmn-play</a> is a playground to try out and experiment with <a href="https://gclaussn.github.io/go-bpmn/" target="_blank" class="text-blue-600">go-bpmn</a>.
         <br />
@@ -38,7 +38,8 @@ onMounted(() => {
         <span class="">3. Execute a process instance, using the engine's operations</span>
       </p>
     </div>
-    <div class="grid grid-cols-1 gap-4">
+
+    <div class="grid grid-cols-1 mt-24">
       <div class="p-8 rounded-lg shadow-lg text-center">
         <div class="block mb-6 text-gray-700 whitespace-pre-wrap">
           Choose a BPMN file to create a process.
@@ -56,6 +57,25 @@ onMounted(() => {
         </label>
         <input type="file" id="bpmn-file-chooser" ref="bpmn-file-chooser" />
       </div>
+    </div>
+
+    <div class="grid grid-cols-1 mt-18">
+      <div class="block mb-6 text-gray-700 whitespace-pre-wrap">
+        or use a predefined example
+      </div>
+    </div>
+    <div class="grid grid-cols-2 mt-4 gap-2 justify-center">
+      <a href="?fetch=example1.bpmn">
+        <div class="p-8 rounded-lg shadow-lg">
+          <img :src="`example1.png`" />
+        </div>
+      </a>
+
+      <a href="?fetch=example2.bpmn">
+        <div class="p-8 rounded-lg shadow-lg">
+          <img :src="`example2.png`" />
+        </div>
+      </a>
     </div>
 
     <div v-if="bpmnXmlError" class="mt-4" :title="bpmnXmlError">
