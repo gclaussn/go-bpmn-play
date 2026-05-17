@@ -101,6 +101,17 @@ describe("bpmn-viewer", () => {
       assert.ok(results["a"])
     })
 
+    it("should use a special style for started call activities", () => {
+      const results = collectMarkers([
+        {bpmnElementId: "a", bpmnElementType: "CALL_ACTIVITY", state: "CREATED"},
+        {bpmnElementId: "b", bpmnElementType: "CALL_ACTIVITY", state: "STARTED"},
+      ])
+
+      assert.equal(Object.keys(results).length, 2)
+      assert.equal(results["a"], "viewer-marker-CREATED")
+      assert.equal(results["b"], "viewer-marker-call-activity-STARTED")
+    })
+
     it("should mark all completed when process instance completed, but exclude sub-processes", () => {
       const results = collectMarkers([
         {bpmnElementId: "a", bpmnElementType: "PROCESS", endedAt: "2026-05-15T16:22:49.44Z"},
@@ -108,10 +119,12 @@ describe("bpmn-viewer", () => {
         {bpmnElementId: "c", bpmnElementType: "SUB_PROCESS", state: "COMPLETED"},
         {bpmnElementId: "d", bpmnElementType: "D", state: "CANCELED"},
         {bpmnElementId: "e", bpmnElementType: "E", state: "TERMINATED"},
+        {bpmnElementId: "f", bpmnElementType: "CALL_ACTIVITY", state: "COMPLETED"},
       ])
 
-      assert.equal(Object.keys(results).length, 1)
-      assert.ok(results["b"])
+      assert.equal(Object.keys(results).length, 2)
+      assert.equal(results["b"], "viewer-marker-COMPLETED")
+      assert.equal(results["f"], "viewer-marker-call-activity-COMPLETED")
     })
   })
 

@@ -1,7 +1,8 @@
 <script setup>
 import { computed, ref } from "vue"
 
-import { operations } from "./state.js"
+import { getBpmnXml } from "./play/play.js"
+import { bpmnXml, operations, processInstance } from "./state.js"
 
 import BpmnViewer from "./bpmn-viewer/BpmnViewer.vue"
 import ElementInstanceList from "./ElementInstanceList.vue"
@@ -25,8 +26,20 @@ const results = computed(() => {
   return operation[tab.value]
 })
 
+const parents = computed(() => {
+  return processInstance.getParents()
+})
+
 function activateTab(newTab) {
   tab.value = newTab
+}
+
+function navigateToParent() {
+  const parents = processInstance.getParents()
+  const parent = parents[parents.length - 1]
+
+  bpmnXml.value = getBpmnXml(parent.processId)
+  processInstance.remove()
 }
 </script>
 
@@ -45,10 +58,27 @@ function activateTab(newTab) {
     </div>
     <div class="w-full mx-auto pr-3 pl-3">
       <div class="relative">
-        <div class="mb-2 p-2 text-gray-700 text-center">
-          <span v-if="results">Count: {{ results.length }}</span>
-          <span v-else-if="tab != 'diagram'">No data available!</span>
-          <span v-else>&nbsp;</span>
+        <div class="mb-2 p-2 text-gray-700 text-center" v-if="results">
+          <span>Count: {{ results.length }}</span>
+        </div>
+        <div class="mb-2 p-2 text-gray-700 text-center" v-else-if="tab != 'diagram'">
+          <span>No data available!</span>
+        </div>
+        <div class="mb-2 p-2 text-gray-700" v-else-if="parents.length != 0">
+          <span>
+            <a
+              class="text-blue-600 cursor-pointer"
+              title="Navigate to parent process instance"
+              @click="navigateToParent"
+            >
+              {{ processInstance.getPartition() }}/{{ parents[parents.length - 1].id }}
+            </a>
+          </span>
+          <span> ... </span>
+          <span>{{ processInstance.getPartition() }}/{{ processInstance.getId() }}</span>
+        </div>
+        <div class="mb-2 p-2 text-gray-700" v-else>
+          <span>&nbsp;</span>
         </div>
 
         <div class="absolute right-0 top-0 pr-5">

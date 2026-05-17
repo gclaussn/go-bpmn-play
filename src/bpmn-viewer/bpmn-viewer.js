@@ -1,6 +1,6 @@
 import { newOperation } from "../app.js"
-import { operations } from "../state.js"
-import { queryIncidentByJob, queryIncidentByTask } from "../play/play.js"
+import { bpmnXml, operations, processInstance } from "../state.js"
+import { getBpmnXml, queryElementInstanceByParent, queryIncidentByJob, queryIncidentByTask } from "../play/play.js"
 
 const MARKER_STYLE = "viewer-marker-"
 
@@ -28,9 +28,6 @@ const OVERLAY_WORK_STATES = new Set([
   "DUE",
   "LOCKED",
 ])
-
-// markers mark element instances of certain states
-let markers = {}
 
 /**
  * Collects annotations for jobs that should be shown in the overlay.
@@ -77,7 +74,11 @@ function collectMarkers(elementInstances) {
     for (let i = 1; i < elementInstances.length; i++) {
       const { bpmnElementId, bpmnElementType, state } = elementInstances[i]
       if (state == "COMPLETED" && bpmnElementType != "SUB_PROCESS") {
-        results[bpmnElementId] = MARKER_STYLE + "COMPLETED"
+        if (bpmnElementType == "CALL_ACTIVITY") {
+          results[bpmnElementId] = MARKER_STYLE + "call-activity-COMPLETED"
+        } else {
+          results[bpmnElementId] = MARKER_STYLE + "COMPLETED"
+        }
       }
     }
 
@@ -96,7 +97,12 @@ function collectMarkers(elementInstances) {
       return results // exclude sub-process that is not in state CREATED
     }
 
-    results[bpmnElementId] = MARKER_STYLE + state
+    if (bpmnElementType == "CALL_ACTIVITY" && state == "STARTED") {
+      results[bpmnElementId] = MARKER_STYLE + "call-activity-" + state
+    } else {
+      results[bpmnElementId] = MARKER_STYLE + state
+    }
+
     return results
   }, {})
 }
@@ -126,6 +132,38 @@ function collectTasks(tasks) {
 
     return results
   }, {})
+}
+
+function navigateToChild(event) {
+  const { element } = event
+  if (element.type != "bpmn:CallActivity") {
+    return
+  }
+
+  let operation = operations.getSelected()
+  if (!operation.is2xx) {
+    // if current operation has not been successfully executed yet, take previous one
+    operation = operations.get(operations.getSelectedIndex() - 1)
+  }
+
+  if (!operation || !operation.elementInstances) {
+    return
+  }
+
+  const elementInstances = _filterByProcessInstance(operation.elementInstances)
+
+  const elementInstance = elementInstances.findLast(e => e.bpmnElementId == element.id)
+  if (!elementInstance) {
+    return
+  }
+
+  const child = queryElementInstanceByParent(elementInstance)
+  if (!child) {
+    return
+  }
+
+  bpmnXml.value = getBpmnXml(child.processId)
+  processInstance.add(child.partition, child.processInstanceId, child.processId)
 }
 
 function onJobClicked(job) {
@@ -188,7 +226,7 @@ function onTaskClicked(task) {
  * @param {Object} canvas Canvas of the BPMN JS viewer.
  * @param {Object} overlays Overlays of the BPMN JS viewer.
  */
-function update(canvas, overlays) {
+function update(canvas, overlays, markers) {
   let operation = operations.getSelected()
   if (!operation.is2xx) {
     // if current operation has not been successfully executed yet, take previous one
@@ -203,23 +241,28 @@ function update(canvas, overlays) {
   }
 
   if (!operation) {
-    return
+    return {}
   }
 
   const isOverlayClickable = operations.isLatest()
 
-  markers = collectMarkers(operation.elementInstances)
-  for (const [bpmnElementId, style] of Object.entries(markers)) {
+  const elementInstances = _filterByProcessInstance(operation.elementInstances)
+  const newMarkers = collectMarkers(elementInstances)
+  for (const [bpmnElementId, style] of Object.entries(newMarkers)) {
     canvas.addMarker(bpmnElementId, style);
   }
 
   if (_isEnded(operation.elementInstances)) {
-    return
+    return newMarkers
   }
 
   const annotations = {}
-  Object.assign(annotations, collectJobs(operation.jobs))
-  Object.assign(annotations, collectTasks(operation.tasks))
+
+  const jobs = _filterByProcessInstance(operation.jobs)
+  Object.assign(annotations, collectJobs(jobs))
+
+  const tasks = _filterByProcessInstance(operation.tasks)
+  Object.assign(annotations, collectTasks(tasks))
 
   for (const [bpmnElementId, annotation] of Object.entries(annotations)) {
     const element = document.createElement("div")
@@ -249,6 +292,8 @@ function update(canvas, overlays) {
   }
 
   overlays.show()
+
+  return newMarkers
 }
 
 /**
@@ -261,7 +306,25 @@ function _isEnded(elementInstances) {
   return elementInstances && elementInstances.length != 0 && elementInstances[0].endedAt
 }
 
+/**
+ * Filters the given entities by the currently set process instance.
+ * 
+ * @param {Array} entities An array of element instances, jobs or tasks.
+ * @returns A filteted array of entities, related to the set process instance.
+ */
+function _filterByProcessInstance(entities) {
+  if (!entities) {
+    return
+  }
+
+  return entities.filter(entity => {
+    const { partition, processInstanceId } = entity
+    return processInstance.getPartition() == partition && processInstance.getId() == processInstanceId
+  })
+}
+
 export {
+  navigateToChild,
   update,
 
   // for testing

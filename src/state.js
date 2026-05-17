@@ -75,9 +75,26 @@ const operations = reactive({
 })
 
 const processInstance = reactive({
+  _parents: [],
   _partition: null,
   _id: null,
   _processId: null,
+
+  add(partition, id, processId) {
+    this._parents.push({
+      partition: this._partition,
+      id: this._id,
+      processId: this._processId,
+    })
+
+    this._partition = partition
+    this._id = id
+    this._processId = processId
+  },
+
+  getParents() {
+    return this._parents
+  },
 
   getPartition() {
     return this._partition
@@ -89,6 +106,14 @@ const processInstance = reactive({
 
   getProcessId() {
     return this._processId
+  },
+
+  remove() {
+    const parent = this._parents.pop()
+
+    this._partition = parent.partition
+    this._id = parent.id
+    this._processId = parent.processId
   },
 
   set(partition, id, processId) {

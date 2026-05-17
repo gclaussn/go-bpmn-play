@@ -1,32 +1,48 @@
 <script setup>
 import { onMounted, watch } from "vue"
 
-import { bpmnProcessId, bpmnXml, bpmnXmlError, operations } from "../state.js"
-import { update } from "./bpmn-viewer.js"
+import { bpmnProcessId, bpmnXml, bpmnXmlError, operations, processInstance } from "../state.js"
+import { navigateToChild, update } from "./bpmn-viewer.js"
 
 let canvas
 let overlays
 
-onMounted(async () => {
+// markers mark element instances of certain states
+let markers
+
+async function create() {
+  if (bpmnXml.value === null) {
+    return
+  }
+
+  markers = {}
+
   const viewer = new BpmnJS({
     container: "#bpmn-viewer"
   })
 
   try {
     await viewer.importXML(bpmnXml.value)
+  } catch (err) {
+    bpmnXmlError.value = err
+    bpmnXml.value = null
+  }
 
-    // center diagram
-    canvas = viewer.get("canvas")
-    canvas.zoom("fit-viewport")
+  canvas = viewer.get("canvas")
+  overlays = viewer.get("overlays")
 
-    const { inner } = canvas.viewbox()
-    const center = {
-      x: inner.x + inner.width / 2,
-      y: inner.y + inner.height / 2
-    }
-    canvas.zoom("fit-viewport", center)
+  // center diagram
+  canvas.zoom("fit-viewport")
 
-    // try to find BPMN process ID
+  const { inner } = canvas.viewbox()
+  const center = {
+    x: inner.x + inner.width / 2,
+    y: inner.y + inner.height / 2
+  }
+  canvas.zoom("fit-viewport", center)
+
+  // try to find BPMN process ID
+  if (bpmnProcessId.value === null) {
     const elementRegistry = viewer.get("elementRegistry")
     const process = elementRegistry.find(element => element.type === "bpmn:Process")
     if (process) {
@@ -34,15 +50,39 @@ onMounted(async () => {
     } else {
       bpmnProcessId.value = ""
     }
-
-    overlays = viewer.get("overlays")
-  } catch (err) {
-    bpmnXmlError.value = err
-    bpmnXml.value = null
   }
+
+  // register handler for navigation to child process instance
+  const eventBus = viewer.get("eventBus")
+  eventBus.on("element.click", navigateToChild)
+}
+
+// create initial viewer
+onMounted(create)
+
+// on navigation between parent and child process instance
+watch(processInstance, async () => {
+  // destroy viewer
+  canvas = null
+  overlays = null
+
+  const element = document.getElementById("bpmn-viewer")
+  element.innerHTML = ""
+
+  // recreate viewer
+  await create()
+
+  // update markers and overlay
+  markers = update(canvas, overlays, markers)
 })
 
-watch(operations, () => update(canvas, overlays))
+watch(operations, () => {
+  if (!canvas && !overlays) {
+    return
+  }
+
+  markers = update(canvas, overlays, markers)
+})
 </script>
 
 <template>

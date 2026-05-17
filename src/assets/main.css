@@ -19,3 +19,8 @@
 .viewer-marker-CREATED:not(.djs-connection) .djs-visual > :first-child {fill: var(--color-gray-300) !important}
 .viewer-marker-STARTED:not(.djs-connection) .djs-visual > :first-child {fill: var(--color-blue-200) !important}
 .viewer-marker-SUSPENDED:not(.djs-connection) .djs-visual > :first-child {fill: var(--color-amber-100) !important}
+
+.viewer-marker-call-activity-COMPLETED:not(.djs-connection) .djs-visual > :first-child {fill: var(--color-green-100) !important}
+.viewer-marker-call-activity-COMPLETED:not(.djs-connection) .djs-visual > :first-child:hover {fill: var(--color-green-200) !important; cursor: pointer}
+.viewer-marker-call-activity-STARTED:not(.djs-connection) .djs-visual > :first-child {fill: var(--color-blue-200) !important}
+.viewer-marker-call-activity-STARTED:not(.djs-connection) .djs-visual > :first-child:hover {fill: var(--color-blue-300) !important; cursor: pointer}
