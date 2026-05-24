@@ -44,6 +44,7 @@ function collectJobs(jobs) {
     const { bpmnElementId, id, partition, state, type } = job
 
     if (!OVERLAY_WORK_STATES.has(state)) {
+      delete results[bpmnElementId]
       return results
     }
 
@@ -91,9 +92,11 @@ function collectMarkers(elementInstances) {
       return results // exclude process
     }
     if (state != "CREATED" && state != "STARTED" && state != "SUSPENDED") {
+      delete results[bpmnElementId]
       return results // exclude CANCELED, COMPLETED, QUEUED and TERMINATED
     }
     if (bpmnElementType == "SUB_PROCESS" && state != "CREATED") {
+      delete results[bpmnElementId]
       return results // exclude sub-process that is not in state CREATED
     }
 
@@ -122,6 +125,7 @@ function collectTasks(tasks) {
     const { bpmnElementId, id, partition, state, type } = task
 
     if (!OVERLAY_WORK_STATES.has(state)) {
+      delete results[bpmnElementId]
       return results
     }
 

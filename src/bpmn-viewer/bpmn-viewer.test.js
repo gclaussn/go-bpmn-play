@@ -52,6 +52,15 @@ describe("bpmn-viewer", () => {
       assert.ok(results["d"].job)
       assert.equal(results["d"].title, "Job 2026-01-04/4, Type: D, State: LOCKED")
     })
+
+    it("should only factor in latest job per BPMN element ID", () => {
+      const results = collectJobs([
+        {bpmnElementId: "a", id: "1", partition: "2026-01-01", state: "CAUSED_INCIDENT", type: "A"},
+        {bpmnElementId: "a", id: "2", partition: "2026-01-01", state: "COMPLETED", type: "A"},
+      ])
+
+      assert.equal(Object.keys(results).length, 0)
+    })
   })
 
   it("collectMarkers", () => {
@@ -175,6 +184,15 @@ describe("bpmn-viewer", () => {
 
       assert.ok(results["d"].task)
       assert.equal(results["d"].title, "Task 2026-01-04/4, Type: D, State: LOCKED")
+    })
+
+    it("should only factor in latest task per BPMN element ID", () => {
+      const results = collectTasks([
+        {bpmnElementId: "a", id: "1", partition: "2026-01-01", state: "CAUSED_INCIDENT", type: "A"},
+        {bpmnElementId: "a", id: "2", partition: "2026-01-01", state: "COMPLETED", type: "A"},
+      ])
+
+      assert.equal(Object.keys(results).length, 0)
     })
   })
 })
