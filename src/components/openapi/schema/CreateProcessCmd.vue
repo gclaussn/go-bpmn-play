@@ -2,6 +2,7 @@
 // generated, see template schema.vue.tpl
 import ErrorDefinitionList from "./ErrorDefinitionList.vue"
 import EscalationDefinitionList from "./EscalationDefinitionList.vue"
+import FileProperty from "../FileProperty.vue"
 import MessageDefinitionList from "./MessageDefinitionList.vue"
 import SignalDefinitionList from "./SignalDefinitionList.vue"
 import StringProperty from "../StringProperty.vue"
@@ -26,11 +27,17 @@ const model = defineModel()
     :required="true"
     v-model="model.bpmnProcessId"
   />
-  <StringProperty
+  <StringProperty v-if="model.bpmnXml.length != 0"
     description="Model of the BPMN process as XML."
     name="bpmnXml"
     placeholder=""
     :disabled="true"
+    :required="true"
+    v-model="model.bpmnXml"
+  />
+  <FileProperty v-if="model.bpmnXml.length == 0"
+    description="Model of the BPMN process as XML."
+    name="bpmnXml"
     :required="true"
     v-model="model.bpmnXml"
   />

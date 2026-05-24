@@ -227,6 +227,10 @@ function _newData(component) {
     return {
       partition: partition,
       completion: {
+        calledProcess: {
+          tags: [],
+          variables: []
+        },
         inclusiveGatewayDecision: [],
         timer: {}
       },
@@ -324,6 +328,15 @@ function _cleanRequestBody(request) {
   if (operationId == "completeJob") {
     const { completion } = copy
 
+    if (completion.calledProcess.tags.length == 0) {
+      delete completion.calledProcess.tags
+    }
+    if (completion.calledProcess.variables.length == 0) {
+      delete completion.calledProcess.variables
+    }
+    if (Object.keys(completion.calledProcess).length == 0) {
+      delete completion.calledProcess
+    }
     if (completion.inclusiveGatewayDecision.length == 0) {
       delete completion.inclusiveGatewayDecision
     }

@@ -15,6 +15,8 @@ const {
 
 const model = reactive({
   time: operation.data["time"] || "",
+  timeCycle: operation.data["timeCycle"] || "",
+  timeDuration: operation.data["timeDuration"] || "",
 })
 
 function onExecute() {
@@ -28,6 +30,8 @@ function onExecute() {
     uri: uri,
     body: {
       time: data["time"] === "" ? undefined : data["time"],
+      timeCycle: data["timeCycle"] === "" ? undefined : data["timeCycle"],
+      timeDuration: data["timeDuration"] === "" ? undefined : data["timeDuration"],
     }
   })
 }

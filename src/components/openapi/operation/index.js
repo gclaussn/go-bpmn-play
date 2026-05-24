@@ -10,9 +10,11 @@ import QueryElementInstances from "./QueryElementInstances.vue"
 import QueryElements from "./QueryElements.vue"
 import QueryIncidents from "./QueryIncidents.vue"
 import QueryJobs from "./QueryJobs.vue"
+import QueryMessageSubscriptions from "./QueryMessageSubscriptions.vue"
 import QueryMessages from "./QueryMessages.vue"
 import QueryProcessInstances from "./QueryProcessInstances.vue"
 import QueryProcesses from "./QueryProcesses.vue"
+import QuerySignalSubscriptions from "./QuerySignalSubscriptions.vue"
 import QueryTasks from "./QueryTasks.vue"
 import QueryVariables from "./QueryVariables.vue"
 import ResolveIncident from "./ResolveIncident.vue"
@@ -38,9 +40,11 @@ export const components = {
   QueryElements,
   QueryIncidents,
   QueryJobs,
+  QueryMessageSubscriptions,
   QueryMessages,
   QueryProcessInstances,
   QueryProcesses,
+  QuerySignalSubscriptions,
   QueryTasks,
   QueryVariables,
   ResolveIncident,
@@ -67,9 +71,11 @@ export const descriptions = {
   QueryElements: "Performs an element query.",
   QueryIncidents: "Performs an incident query.",
   QueryJobs: "Performs a job query.",
+  QueryMessageSubscriptions: "Performs a message subscription query.",
   QueryMessages: "Performs a message query.",
   QueryProcessInstances: "Performs a process instance query.",
   QueryProcesses: "Performs a process query.",
+  QuerySignalSubscriptions: "Performs a signal subscription query.",
   QueryTasks: "Performs a task query.",
   QueryVariables: "Performs a variable query.",
   ResolveIncident: "Resolves a job or task related incident.<br /><br />When an incident is resolved, a retry job or task is created. The retry count is set to <code class='description-code'>0</code>.",
@@ -96,9 +102,11 @@ export const names = {
   QueryElements: "Query elements",
   QueryIncidents: "Query incidents",
   QueryJobs: "Query jobs",
+  QueryMessageSubscriptions: "Query message subscriptions",
   QueryMessages: "Query messages",
   QueryProcessInstances: "Query process instances",
   QueryProcesses: "Query processes",
+  QuerySignalSubscriptions: "Query signal subscriptions",
   QueryTasks: "Query tasks",
   QueryVariables: "Query variables",
   ResolveIncident: "Resolve incident",

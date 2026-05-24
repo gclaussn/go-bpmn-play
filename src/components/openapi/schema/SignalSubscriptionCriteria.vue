@@ -13,27 +13,27 @@ const model = defineModel()
 
 <template>
   <StringProperty
-    description="A future point in time."
-    name="time"
-    placeholder="2006-01-02T15:04:05Z07:00"
+    description="Partition filter."
+    name="partition"
+    placeholder="2006-01-02"
     :disabled="disabled"
     :required="false"
-    v-model="model.time"
+    v-model="model.partition"
   />
   <StringProperty
-    description="CRON expression, when evaluated the next tick specifies the engine's new time."
-    name="timeCycle"
+    description="Signal name."
+    name="name"
     placeholder=""
     :disabled="disabled"
     :required="false"
-    v-model="model.timeCycle"
+    v-model="model.name"
   />
   <StringProperty
-    description="Duration, used to calculate a future point in time."
-    name="timeDuration"
-    placeholder=""
+    description="Process instance filter."
+    name="processInstanceId"
+    placeholder="0"
     :disabled="disabled"
     :required="false"
-    v-model="model.timeDuration"
+    v-model.number="model.processInstanceId"
   />
 </template>

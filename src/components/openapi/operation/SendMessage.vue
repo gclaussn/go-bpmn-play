@@ -25,7 +25,7 @@ const model = reactive({
 function onExecute() {
   const data = toRaw(model)
 
-  const uri = "/events/messages"
+  const uri = "/messages"
 
   execute({
     operationId: "sendMessage",

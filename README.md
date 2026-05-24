@@ -56,10 +56,13 @@ node --test
 bash ./.github/workflows/build.sh
 ```
 
-## Preview
+## Release
 
-To preview the built app, run:
-
-```sh
-npm run preview
-```
+- Update `github.com/gclaussn/go-bpmn` version in [go.mod](go.mod)
+- Run `go mod download`
+- Run `go mod tidy`
+- [Generate](#generate)
+- [Test](#test)
+- [Build](#build)
+- Update `go-bpmn-play` version in [package.json](package.json) and [package-lock.json](package-lock.json)
+- Merge changes into **master** branch

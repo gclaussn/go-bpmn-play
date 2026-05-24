@@ -1,7 +1,7 @@
 <script setup>
 // generated, see template operation.vue.tpl
 import { onUnmounted, reactive, toRaw } from "vue"
-import ProcessInstanceCriteria from "../schema/ProcessInstanceCriteria.vue"
+import MessageSubscriptionCriteria from "../schema/MessageSubscriptionCriteria.vue"
 
 const {
   disabled,
@@ -15,29 +15,25 @@ const {
 
 const model = reactive({
   partition: operation.data["partition"] || "",
-  id: operation.data["id"],
-  parentId: operation.data["parentId"],
-  processId: operation.data["processId"],
-  rootId: operation.data["rootId"],
-  tags: operation.data["tags"] || [],
+  correlationKey: operation.data["correlationKey"] || "",
+  name: operation.data["name"] || "",
+  processInstanceId: operation.data["processInstanceId"],
 })
 
 function onExecute() {
   const data = toRaw(model)
 
-  const uri = "/process-instances/query"
+  const uri = "/messages/subscriptions/query"
 
   execute({
-    operationId: "queryProcessInstances",
+    operationId: "queryMessageSubscriptions",
     method: "POST",
     uri: uri,
     body: {
       partition: data["partition"] === "" ? undefined : data["partition"],
-      id: data["id"] === 0 || data["id"] === "" ? undefined : data["id"],
-      parentId: data["parentId"] === 0 || data["parentId"] === "" ? undefined : data["parentId"],
-      processId: data["processId"] === 0 || data["processId"] === "" ? undefined : data["processId"],
-      rootId: data["rootId"] === 0 || data["rootId"] === "" ? undefined : data["rootId"],
-      tags: data["tags"].length == 0 ? undefined : data["tags"],
+      correlationKey: data["correlationKey"] === "" ? undefined : data["correlationKey"],
+      name: data["name"] === "" ? undefined : data["name"],
+      processInstanceId: data["processInstanceId"] === 0 || data["processInstanceId"] === "" ? undefined : data["processInstanceId"],
     }
   })
 }
@@ -48,7 +44,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <ProcessInstanceCriteria
+  <MessageSubscriptionCriteria
     :disabled="disabled"
     v-model="model"
   />

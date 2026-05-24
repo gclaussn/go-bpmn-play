@@ -38,6 +38,14 @@ const model = defineModel()
     v-model="model.bpmnElementId"
   />
   <StringProperty
+    description="Filter, used to query children of a parent element instance."
+    name="parentId"
+    placeholder="0"
+    :disabled="disabled"
+    :required="false"
+    v-model.number="model.parentId"
+  />
+  <StringProperty
     description="Process filter."
     name="processId"
     placeholder="0"

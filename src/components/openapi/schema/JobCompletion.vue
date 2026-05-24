@@ -1,5 +1,6 @@
 <script setup>
 // generated, see template schema.vue.tpl
+import CalledProcess from "./CalledProcess.vue"
 import StringListProperty from "../StringListProperty.vue"
 import StringProperty from "../StringProperty.vue"
 import Timer from "./Timer.vue"
@@ -14,6 +15,22 @@ const model = defineModel()
 </script>
 
 <template>
+  <div>
+    <label
+      class="block text-gray-700 mb-2"
+      for="name"
+    >
+      <span>calledProcess</span>
+      <br />
+      <span class="text-sm">CalledProcess provides data for the creation of a child process instance.</span>
+    </label>
+    <div class="pl-4">
+      <CalledProcess
+        :disabled="disabled"
+        v-model="model.calledProcess"
+      />
+    </div>
+  </div>
   <StringProperty
     description="Code of a BPMN error, used to specify or trigger a BPMN error. Applicable when job type is <code class='description-code'>SET_ERROR_CODE</code> or <code class='description-code'>EXECUTE</code>."
     name="errorCode"
@@ -62,7 +79,7 @@ const model = defineModel()
     v-model="model.messageName"
   />
   <StringProperty
-    description="Name of the signal to subscribe to. Applicable when job type is <code class='description-code'>SUBSCRIBE_SIGNAL</code>."
+    description="Name of the signal, used to subscribe to or send a signal. Applicable when job type is <code class='description-code'>SUBSCRIBE_SIGNAL</code> or <code class='description-code'>SET_SIGNAL_NAME</code>."
     name="signalName"
     placeholder=""
     :disabled="disabled"
