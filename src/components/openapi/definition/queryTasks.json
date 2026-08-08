@@ -1,0 +1,62 @@
+{
+  "id": "queryTasks",
+  "method": "POST",
+  "requestUri": "/tasks/query",
+  "properties": [
+    {
+      "name": "partition",
+      "description": "Partition filter.",
+      "type": "string",
+      "format": "date"
+    },
+    {
+      "name": "id",
+      "description": "Task filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "elementId",
+      "description": "Element filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "elementInstanceId",
+      "description": "Element instance filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "processId",
+      "description": "Process filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "processInstanceId",
+      "description": "Process instance filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "type",
+      "description": "TaskType describes the different types of tasks, an engine needs to execute.\u003cbr /\u003e\u003cbr /\u003e  - \u003ccode class='description-code'\u003eDEQUEUE_PROCESS_INSTANCE\u003c/code\u003e dequeues a queued process instance\u003cbr /\u003e  - \u003ccode class='description-code'\u003eJOIN_PARALLEL_GATEWAY\u003c/code\u003e continues a parallel gateway by joining executions\u003cbr /\u003e  - \u003ccode class='description-code'\u003eSTART_PROCESS_INSTANCE\u003c/code\u003e starts a queued process instance\u003cbr /\u003e  - \u003ccode class='description-code'\u003eTERMINATE_PROCESS_INSTANCE\u003c/code\u003e terminates a process instance\u003cbr /\u003e  - \u003ccode class='description-code'\u003eTRIGGER_EVENT\u003c/code\u003e triggers an event (error, escalation, message, signal or timer)\u003cbr /\u003e\u003cbr /\u003eManagement related types, that are only relevant for a pg engine:\u003cbr /\u003e\u003cbr /\u003e  - \u003ccode class='description-code'\u003eCREATE_PARTITION\u003c/code\u003e creates a table partition for a specific date\u003cbr /\u003e  - \u003ccode class='description-code'\u003eDETACH_PARTITION\u003c/code\u003e detaches a completed table partition\u003cbr /\u003e  - \u003ccode class='description-code'\u003eDROP_PARTITION\u003c/code\u003e drops a detached table partition\u003cbr /\u003e  - \u003ccode class='description-code'\u003ePURGE_MESSAGES\u003c/code\u003e purges messages that are expired\u003cbr /\u003e  - \u003ccode class='description-code'\u003ePURGE_SIGNALS\u003c/code\u003e purges signals that have no active subscribers anymore",
+      "type": "object"
+    },
+    {
+      "name": "offset",
+      "description": "The number of results to skip, before returning any result. If offset is \u003ccode class='description-code'\u003e0\u003c/code\u003e, no results are skipped.",
+      "type": "integer",
+      "format": "int32",
+      "inQuery": true
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of results to return. If limit is \u003ccode class='description-code'\u003e0\u003c/code\u003e, all results are returned.",
+      "type": "integer",
+      "format": "int32",
+      "inQuery": true
+    }
+  ]
+}

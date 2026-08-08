@@ -1,0 +1,47 @@
+{
+  "id": "queryVariables",
+  "method": "POST",
+  "requestUri": "/variables/query",
+  "properties": [
+    {
+      "name": "partition",
+      "description": "Partition filter.",
+      "type": "string",
+      "format": "date"
+    },
+    {
+      "name": "elementInstanceId",
+      "description": "Element instance filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "names",
+      "description": "Names of variables to include.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "processInstanceId",
+      "description": "Process instance filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "offset",
+      "description": "The number of results to skip, before returning any result. If offset is \u003ccode class='description-code'\u003e0\u003c/code\u003e, no results are skipped.",
+      "type": "integer",
+      "format": "int32",
+      "inQuery": true
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of results to return. If limit is \u003ccode class='description-code'\u003e0\u003c/code\u003e, all results are returned.",
+      "type": "integer",
+      "format": "int32",
+      "inQuery": true
+    }
+  ]
+}

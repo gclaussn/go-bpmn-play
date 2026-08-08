@@ -1,0 +1,70 @@
+{
+  "id": "setElementVariables",
+  "method": "PUT",
+  "requestUri": "/element-instances/{partition}/{id}/variables",
+  "properties": [
+    {
+      "name": "partition",
+      "required": true,
+      "description": "Element instance partition.",
+      "type": "string",
+      "format": "date",
+      "inPath": true
+    },
+    {
+      "name": "id",
+      "required": true,
+      "description": "Element instance ID.",
+      "type": "integer",
+      "format": "int32",
+      "inPath": true
+    },
+    {
+      "name": "variables",
+      "description": "Variables to set or delete. For a variable deletion, no data must be provided.",
+      "type": "array",
+      "items": {
+        "description": "VariableData represents a named variable, including data.",
+        "type": "object",
+        "properties": [
+          {
+            "name": "data",
+            "description": "Data is used to store any data within an engine.",
+            "type": "object",
+            "properties": [
+              {
+                "name": "encoding",
+                "required": true,
+                "description": "Encoding of the value - e.g. \u003ccode class='description-code'\u003ejson\u003c/code\u003e.",
+                "type": "string"
+              },
+              {
+                "name": "encrypted",
+                "description": "Determines if a value is encrypted before it is stored.",
+                "type": "boolean"
+              },
+              {
+                "name": "value",
+                "required": true,
+                "description": "Value, encoded as a string.",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "name",
+            "required": true,
+            "description": "Variable name.",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "workerId",
+      "required": true,
+      "description": "ID of the worker that set the variables.",
+      "type": "string"
+    }
+  ]
+}

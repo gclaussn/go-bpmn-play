@@ -1,0 +1,29 @@
+{
+  "id": "getProcessVariables",
+  "method": "GET",
+  "requestUri": "/process-instances/{partition}/{id}/variables",
+  "properties": [
+    {
+      "name": "partition",
+      "required": true,
+      "description": "Process instance partition.",
+      "type": "string",
+      "format": "date",
+      "inPath": true
+    },
+    {
+      "name": "id",
+      "required": true,
+      "description": "Process instance ID.",
+      "type": "integer",
+      "format": "int32",
+      "inPath": true
+    },
+    {
+      "name": "names",
+      "description": "Comma separated list of variables to include.",
+      "type": "string",
+      "inQuery": true
+    }
+  ]
+}

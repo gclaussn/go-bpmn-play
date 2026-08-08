@@ -1,0 +1,94 @@
+{
+  "id": "createProcessInstance",
+  "method": "POST",
+  "requestUri": "/process-instances",
+  "properties": [
+    {
+      "name": "bpmnProcessId",
+      "required": true,
+      "description": "BPMN ID of an existing process.",
+      "type": "string"
+    },
+    {
+      "name": "correlationKey",
+      "description": "Optional key, used to correlate a process instance with a business entity.",
+      "type": "string"
+    },
+    {
+      "name": "tags",
+      "description": "Tags.",
+      "type": "array",
+      "items": {
+        "description": "Tag is used to tag entities like process or process instance.",
+        "type": "object",
+        "properties": [
+          {
+            "name": "name",
+            "required": true,
+            "description": "Tag name.",
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "required": true,
+            "description": "Tag value.",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "variables",
+      "description": "Variables to set at process instance scope.",
+      "type": "array",
+      "items": {
+        "description": "VariableData represents a named variable, including data.",
+        "type": "object",
+        "properties": [
+          {
+            "name": "data",
+            "description": "Data is used to store any data within an engine.",
+            "type": "object",
+            "properties": [
+              {
+                "name": "encoding",
+                "required": true,
+                "description": "Encoding of the value - e.g. \u003ccode class='description-code'\u003ejson\u003c/code\u003e.",
+                "type": "string"
+              },
+              {
+                "name": "encrypted",
+                "description": "Determines if a value is encrypted before it is stored.",
+                "type": "boolean"
+              },
+              {
+                "name": "value",
+                "required": true,
+                "description": "Value, encoded as a string.",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "name",
+            "required": true,
+            "description": "Variable name.",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "version",
+      "required": true,
+      "description": "Version of an existing process.",
+      "type": "string"
+    },
+    {
+      "name": "workerId",
+      "required": true,
+      "description": "ID of the worker that created the process instance.",
+      "type": "string"
+    }
+  ]
+}

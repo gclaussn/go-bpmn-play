@@ -1,0 +1,29 @@
+{
+  "id": "getElementVariables",
+  "method": "GET",
+  "requestUri": "/element-instances/{partition}/{id}/variables",
+  "properties": [
+    {
+      "name": "partition",
+      "required": true,
+      "description": "Element instance partition.",
+      "type": "string",
+      "format": "date",
+      "inPath": true
+    },
+    {
+      "name": "id",
+      "required": true,
+      "description": "Element instance ID.",
+      "type": "integer",
+      "format": "int32",
+      "inPath": true
+    },
+    {
+      "name": "names",
+      "description": "Comma separated list of variables to include.",
+      "type": "string",
+      "inQuery": true
+    }
+  ]
+}

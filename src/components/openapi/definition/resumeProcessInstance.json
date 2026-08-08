@@ -1,0 +1,29 @@
+{
+  "id": "resumeProcessInstance",
+  "method": "PATCH",
+  "requestUri": "/process-instances/{partition}/{id}/resume",
+  "properties": [
+    {
+      "name": "partition",
+      "required": true,
+      "description": "Process instance partition.",
+      "type": "string",
+      "format": "date",
+      "inPath": true
+    },
+    {
+      "name": "id",
+      "required": true,
+      "description": "Process instance ID.",
+      "type": "integer",
+      "format": "int32",
+      "inPath": true
+    },
+    {
+      "name": "workerId",
+      "required": true,
+      "description": "ID of the worker that resumed the process instance.",
+      "type": "string"
+    }
+  ]
+}

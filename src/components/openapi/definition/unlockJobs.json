@@ -1,0 +1,25 @@
+{
+  "id": "unlockJobs",
+  "method": "POST",
+  "requestUri": "/jobs/unlock",
+  "properties": [
+    {
+      "name": "partition",
+      "description": "Partition condition.",
+      "type": "string",
+      "format": "date"
+    },
+    {
+      "name": "id",
+      "description": "Job condition - must be used in combination with a partition.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "workerId",
+      "required": true,
+      "description": "Condition that restricts the jobs, to be locked by a specific worker.",
+      "type": "string"
+    }
+  ]
+}

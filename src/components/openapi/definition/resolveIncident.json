@@ -1,0 +1,34 @@
+{
+  "id": "resolveIncident",
+  "method": "PATCH",
+  "requestUri": "/incidents/{partition}/{id}/resolve",
+  "properties": [
+    {
+      "name": "partition",
+      "required": true,
+      "description": "Incident partition.",
+      "type": "string",
+      "format": "date",
+      "inPath": true
+    },
+    {
+      "name": "id",
+      "required": true,
+      "description": "Incident ID.",
+      "type": "integer",
+      "format": "int32",
+      "inPath": true
+    },
+    {
+      "name": "retryTimer",
+      "description": "Duration until the retry job or task becomes due.",
+      "type": "string"
+    },
+    {
+      "name": "workerId",
+      "required": true,
+      "description": "ID of the worker that resolved the incident",
+      "type": "string"
+    }
+  ]
+}

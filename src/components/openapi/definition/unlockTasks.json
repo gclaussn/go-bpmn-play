@@ -1,0 +1,25 @@
+{
+  "id": "unlockTasks",
+  "method": "POST",
+  "requestUri": "/tasks/unlock",
+  "properties": [
+    {
+      "name": "partition",
+      "description": "Partition condition.",
+      "type": "string",
+      "format": "date"
+    },
+    {
+      "name": "id",
+      "description": "Task condition - must be used in combination with a partition.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "engineId",
+      "required": true,
+      "description": "Condition that restricts the tasks, to be locked by a specific engine.",
+      "type": "string"
+    }
+  ]
+}

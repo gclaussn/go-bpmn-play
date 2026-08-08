@@ -1,0 +1,46 @@
+{
+  "id": "lockJobs",
+  "method": "POST",
+  "requestUri": "/jobs/lock",
+  "properties": [
+    {
+      "name": "partition",
+      "description": "Partition condition.",
+      "type": "string",
+      "format": "date"
+    },
+    {
+      "name": "id",
+      "description": "Job condition - must be used in combination with a partition.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of jobs to lock.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "processIds",
+      "description": "IDs of processes to include.",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "format": "int32"
+      }
+    },
+    {
+      "name": "processInstanceId",
+      "description": "Process instance condition - must be used in combination with a partition.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "workerId",
+      "required": true,
+      "description": "ID of the worker that locks the jobs.",
+      "type": "string"
+    }
+  ]
+}

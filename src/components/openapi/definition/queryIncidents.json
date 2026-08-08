@@ -1,0 +1,51 @@
+{
+  "id": "queryIncidents",
+  "method": "POST",
+  "requestUri": "/incidents/query",
+  "properties": [
+    {
+      "name": "partition",
+      "description": "Partition filter.",
+      "type": "string",
+      "format": "date"
+    },
+    {
+      "name": "id",
+      "description": "Incident filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "jobId",
+      "description": "Job filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "processInstanceId",
+      "description": "Process instance filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "taskId",
+      "description": "Process filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "offset",
+      "description": "The number of results to skip, before returning any result. If offset is \u003ccode class='description-code'\u003e0\u003c/code\u003e, no results are skipped.",
+      "type": "integer",
+      "format": "int32",
+      "inQuery": true
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of results to return. If limit is \u003ccode class='description-code'\u003e0\u003c/code\u003e, all results are returned.",
+      "type": "integer",
+      "format": "int32",
+      "inQuery": true
+    }
+  ]
+}

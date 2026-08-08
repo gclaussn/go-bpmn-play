@@ -1,9 +1,41 @@
 import { operations, processInstance } from "./state.js"
 
+function buildUri(definition, data) {
+  let uri = definition.requestUri
+  
+  let query = []
+  for (const property of definition.properties) {
+    if (property.inPath) {
+      uri = uri.replace("{" + property.name + "}", data[property.name] || "-")
+      
+      delete data[property.name]
+    } else if (property.inQuery && data[property.name]) {
+      query.push(property.name)
+      query.push(data[property.name])
+      
+      delete data[property.name]
+    }
+  }
+
+  if (query.length == 0) {
+    return uri
+  }
+
+  uri += "?"
+  for (let i = 0; i < query.length; i += 2) {
+    if (i != 0) {
+      uri += "&"
+    }
+
+    uri += `${query[i]}=${query[i + 1]}`
+  }
+
+  return uri
+}
+
 function executeRequest(request, onSuccess, onError) {
   const selectedIndex = operations.getSelectedIndex()
 
-  request.body = _cleanRequestBody(request)
   request.body = JSON.stringify(request.body, null, 2)
 
   const requestJson = JSON.stringify(request)
@@ -73,6 +105,7 @@ function newOperation(component) {
 }
 
 export {
+  buildUri,
   executeRequest,
   newOperation,
 }
@@ -316,38 +349,4 @@ function _newData(component) {
   } else {
     return {}
   }
-}
-
-function _cleanRequestBody(request) {
-  const { body, operationId } = request 
-  if (!body) {
-    return
-  }
-
-  const copy = JSON.parse(JSON.stringify(body))
-  if (operationId == "completeJob") {
-    const { completion } = copy
-
-    if (completion.calledProcess.tags.length == 0) {
-      delete completion.calledProcess.tags
-    }
-    if (completion.calledProcess.variables.length == 0) {
-      delete completion.calledProcess.variables
-    }
-    if (Object.keys(completion.calledProcess).length == 0) {
-      delete completion.calledProcess
-    }
-    if (completion.inclusiveGatewayDecision.length == 0) {
-      delete completion.inclusiveGatewayDecision
-    }
-    if (Object.keys(completion.timer).length == 0) {
-      delete completion.timer
-    }
-
-    if (Object.keys(completion).length == 0) {
-      delete copy.completion
-    }
-  }
-
-  return copy
 }

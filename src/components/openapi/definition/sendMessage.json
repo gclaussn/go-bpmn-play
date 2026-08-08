@@ -1,0 +1,94 @@
+{
+  "id": "sendMessage",
+  "method": "POST",
+  "requestUri": "/messages",
+  "properties": [
+    {
+      "name": "correlationKey",
+      "required": true,
+      "description": "Key, used to correlate a message subscription with the message.",
+      "type": "string"
+    },
+    {
+      "name": "expirationTimer",
+      "description": "A timer defines a point in time using a time value, a CRON expression or a duration.",
+      "type": "object",
+      "properties": [
+        {
+          "name": "time",
+          "description": "A point in time.",
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "name": "timeCycle",
+          "description": "CRON expression that specifies a cyclic timer.",
+          "type": "string"
+        },
+        {
+          "name": "timeDuration",
+          "description": "Duration based timer that uses the engine's time to calculate a point in time.",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "name",
+      "required": true,
+      "description": "Message name.",
+      "type": "string"
+    },
+    {
+      "name": "uniqueKey",
+      "description": "Optional key that uniquely identifies the message. If a message with the same name, correlation key and unique key already exists, the message is discarded.",
+      "type": "string"
+    },
+    {
+      "name": "variables",
+      "description": "Variables to set or delete at process instance scope. For a variable deletion, no data must be provided.",
+      "type": "array",
+      "items": {
+        "description": "VariableData represents a named variable, including data.",
+        "type": "object",
+        "properties": [
+          {
+            "name": "data",
+            "description": "Data is used to store any data within an engine.",
+            "type": "object",
+            "properties": [
+              {
+                "name": "encoding",
+                "required": true,
+                "description": "Encoding of the value - e.g. \u003ccode class='description-code'\u003ejson\u003c/code\u003e.",
+                "type": "string"
+              },
+              {
+                "name": "encrypted",
+                "description": "Determines if a value is encrypted before it is stored.",
+                "type": "boolean"
+              },
+              {
+                "name": "value",
+                "required": true,
+                "description": "Value, encoded as a string.",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "name",
+            "required": true,
+            "description": "Variable name.",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "workerId",
+      "required": true,
+      "description": "ID of the worker that sent the message.",
+      "type": "string"
+    }
+  ]
+}

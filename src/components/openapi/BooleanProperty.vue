@@ -1,41 +1,39 @@
 <script setup>
+import { onMounted, useTemplateRef } from "vue"
+
 const {
-  description,
+  data,
   disabled,
-  name,
-  required,
+  property,
 } = defineProps({
-  description: String,
+  data: Boolean,
   disabled: Boolean,
-  name: String,
-  required: Boolean,
+  property: Object,
 })
 
-const model = defineModel()
+const input = useTemplateRef("input")
+
+function getData() {
+  return input.value.checked
+}
+
+defineExpose({ getData })
+
+onMounted(() => {
+  input.value.checked = data
+})
 </script>
 
 <template>
-  <div class="mb-4">
-    <label
-      class="block text-gray-700 mb-2"
-      for="name"
-    >
-      <span>{{ name }}</span>
-      <span v-if="required" class="text-red-600">*</span>
-      <br />
-      <span class="text-sm" v-html="description" />
-    </label>
-    <input
-      class="
-        h-4 w-4 shrink-0 rounded border border-gray-400  bg-white outline-none transition
-        checked:border-blue-600 checked:bg-blue-600
-        focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
-        disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100
-      "
-      type="checkbox"
-      :disabled="disabled"
-      :name="name"
-      v-model="model"
-    />
-  </div>
+  <input
+    class="
+      h-4 w-4 shrink-0 rounded border border-gray-400  bg-white outline-none transition
+      checked:border-blue-600 checked:bg-blue-600
+      focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2
+      disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-100
+    "
+    ref="input"
+    type="checkbox"
+    :disabled="disabled"
+  />
 </template>

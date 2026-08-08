@@ -1,0 +1,74 @@
+{
+  "id": "queryProcessInstances",
+  "method": "POST",
+  "requestUri": "/process-instances/query",
+  "properties": [
+    {
+      "name": "partition",
+      "description": "Partition filter.",
+      "type": "string",
+      "format": "date"
+    },
+    {
+      "name": "id",
+      "description": "Process instance filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "parentId",
+      "description": "Filter, used to query process instances that have a specific parent process instance.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "processId",
+      "description": "Process filter.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "rootId",
+      "description": "Filter, used to query process instances descending from a root process instance (which is included)",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "tags",
+      "description": "Tags, a process instance must have, to be included.",
+      "type": "array",
+      "items": {
+        "description": "Tag is used to tag entities like process or process instance.",
+        "type": "object",
+        "properties": [
+          {
+            "name": "name",
+            "required": true,
+            "description": "Tag name.",
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "required": true,
+            "description": "Tag value.",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "offset",
+      "description": "The number of results to skip, before returning any result. If offset is \u003ccode class='description-code'\u003e0\u003c/code\u003e, no results are skipped.",
+      "type": "integer",
+      "format": "int32",
+      "inQuery": true
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of results to return. If limit is \u003ccode class='description-code'\u003e0\u003c/code\u003e, all results are returned.",
+      "type": "integer",
+      "format": "int32",
+      "inQuery": true
+    }
+  ]
+}

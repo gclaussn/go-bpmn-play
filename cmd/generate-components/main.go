@@ -3,16 +3,15 @@ package main
 import (
 	"bytes"
 	"embed"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
 	"log"
 	"os"
-	"regexp"
 	"slices"
 	"strings"
 	"text/template"
-	"time"
 
 	"gopkg.in/yaml.v3"
 )
@@ -24,8 +23,6 @@ var exludedOperations = []string{
 	"checkReadiness",
 	"getBpmnXml",
 }
-
-var inlineCodeRegexp *regexp.Regexp = regexp.MustCompile("`([A-Z]+)`")
 
 func main() {
 	log.SetFlags(0)
@@ -55,8 +52,6 @@ func main() {
 
 	g := newGenerator(sourcePath, outputPath)
 
-	schemas := make(map[string]*VueSchema)
-
 	// generate operations
 	operations := g.mapOperations()
 
@@ -64,45 +59,59 @@ func main() {
 	writeFile(outputPath, "operation/index.js", operationIndexJs)
 
 	for _, operation := range operations {
-		if operation.Schema != nil {
-			// collect related schemas
-			for _, schemaId := range g.collectSchemaIds(operation.Schema.Id) {
-				if _, ok := schemas[schemaId]; !ok {
-					schemas[schemaId] = g.mapSchema(schemaId)
-				}
-			}
-
-			schemas[operation.Schema.Id] = operation.Schema
-		}
-
 		vue := g.generateOperationVue(operation)
 		writeFile(outputPath, fmt.Sprintf("operation/%s.vue", operation.Component), vue)
 	}
 
-	// generate schemas
-	for schemaId, schema := range schemas {
-		for i, property := range schema.Properties {
-			if property.Type == "object" {
-				targetSchema := schemas[property.SchemaId]
+	// generate definitions
+	for _, operation := range operations {
+		var properties []VueSchema
 
-				schema.Properties[i].Description = targetSchema.Description
-			}
+		for _, pathParameter := range operation.pathParameters {
+			properties = append(properties, VueSchema{
+				Name:        pathParameter.Name,
+				Required:    pathParameter.Required,
+				Description: pathParameter.Description,
+
+				Type:   pathParameter.Type,
+				Format: pathParameter.Format,
+
+				InPath: true,
+			})
 		}
 
-		vue := g.generateSchemaVue(schema)
-		writeFile(outputPath, fmt.Sprintf("schema/%s.vue", schemaId), vue)
-	}
+		if operation.schemaId != "" {
+			schema := g.mapSchema(operation.schemaId)
 
-	// generate list schemas
-	for _, schema := range schemas {
-		for _, property := range schema.Properties {
-			if property.Type == "array" && property.SchemaId != "" {
-				targetSchema := schemas[property.SchemaId]
-
-				vue := g.generateSchemaListVue(targetSchema)
-				writeFile(outputPath, fmt.Sprintf("schema/%sList.vue", property.SchemaId), vue)
-			}
+			properties = append(properties, schema.Properties...)
 		}
+
+		for _, queryParameter := range operation.queryParameters {
+			properties = append(properties, VueSchema{
+				Name:        queryParameter.Name,
+				Description: queryParameter.Description,
+
+				Type:   queryParameter.Type,
+				Format: queryParameter.Format,
+
+				InQuery: true,
+			})
+		}
+
+		definition := VueDefinition{
+			Id:         operation.Id,
+			Method:     operation.method,
+			RequestUri: operation.requestUri,
+
+			Properties: properties,
+		}
+
+		definitionJson, err := json.MarshalIndent(definition, "", "  ")
+		if err != nil {
+			log.Fatalf("failed to marshal definition: %v", err)
+		}
+
+		writeFile(outputPath, fmt.Sprintf("definition/%s.json", operation.Id), string(definitionJson))
 	}
 }
 
@@ -135,40 +144,13 @@ func newGenerator(sourcePath string, outputPath string) generator {
 		log.Fatalf("failed to parse template: %v", err)
 	}
 
-	operationVueFuncs := template.FuncMap{
-		"defaultValue": getDefaultValue,
-		"imports":      getOperationImports,
-		"placeholder":  getPlaceholder,
-	}
-
-	operationVue, err := template.New("operation.vue.tpl").Funcs(operationVueFuncs).ParseFS(resources, "templates/operation.vue.tpl")
-	if err != nil {
-		log.Fatalf("failed to parse template: %v", err)
-	}
-
-	schemaVueFuncs := template.FuncMap{
-		"imports":     getSchemaImports,
-		"placeholder": getPlaceholder,
-	}
-
-	schemaVue, err := template.New("schema.vue.tpl").Funcs(schemaVueFuncs).ParseFS(resources, "templates/schema.vue.tpl")
-	if err != nil {
-		log.Fatalf("failed to parse template: %v", err)
-	}
-
-	schemaListVueFuncs := template.FuncMap{
-		"defaultValue": getDefaultValue,
-	}
-
-	schemaListVue, err := template.New("schema.list.vue.tpl").Funcs(schemaListVueFuncs).ParseFS(resources, "templates/schema.list.vue.tpl")
+	operationVue, err := template.New("operation.vue.tpl").ParseFS(resources, "templates/operation.vue.tpl")
 	if err != nil {
 		log.Fatalf("failed to parse template: %v", err)
 	}
 
 	g.operationIndexJs = operationIndexJs
 	g.operationVue = operationVue
-	g.schemaVue = schemaVue
-	g.schemaListVue = schemaListVue
 
 	return g
 }
@@ -180,33 +162,6 @@ type generator struct {
 
 	operationIndexJs *template.Template
 	operationVue     *template.Template
-	schemaVue        *template.Template
-	schemaListVue    *template.Template
-}
-
-func (g generator) collectSchemaIds(schemaId string) []string {
-	ids := []string{schemaId}
-
-	i := 0
-	for i < len(ids) {
-		schema, ok := g.openApi.Components.Schemas[ids[i]]
-		if !ok {
-			log.Fatalf("schema %s: unknown schema", ids[i])
-		}
-
-		for _, property := range schema.Properties {
-			if property.Reference != "" {
-				ids = append(ids, extractId(property.Reference))
-			}
-			if property.Items != nil && property.Items.Reference != "" {
-				ids = append(ids, extractId(property.Items.Reference))
-			}
-		}
-
-		i++
-	}
-
-	return ids
 }
 
 func (g generator) generateOperationVue(operation VueOperation) string {
@@ -222,22 +177,6 @@ func (g generator) generateOperationIndexJs(operations []VueOperation) string {
 	if err := g.operationIndexJs.Execute(&b, map[string]any{
 		"operations": operations,
 	}); err != nil {
-		log.Fatalf("failed to execute template: %v", err)
-	}
-	return b.String()
-}
-
-func (g generator) generateSchemaVue(schema *VueSchema) string {
-	var b bytes.Buffer
-	if err := g.schemaVue.Execute(&b, schema); err != nil {
-		log.Fatalf("failed to execute template: %v", err)
-	}
-	return b.String()
-}
-
-func (g generator) generateSchemaListVue(targetSchema *VueSchema) string {
-	var b bytes.Buffer
-	if err := g.schemaListVue.Execute(&b, targetSchema); err != nil {
 		log.Fatalf("failed to execute template: %v", err)
 	}
 	return b.String()
@@ -304,9 +243,10 @@ func (g generator) mapOperations() []VueOperation {
 					Format:      parameter.Schema.Format,
 				}
 
-				if parameter.In == "path" {
+				switch parameter.In {
+				case "path":
 					pathParameters = append(pathParameters, vueParameter)
-				} else if parameter.In == "query" {
+				case "query":
 					queryParameters = append(queryParameters, vueParameter)
 				}
 			}
@@ -322,12 +262,12 @@ func (g generator) mapOperations() []VueOperation {
 				Name:        operation.Summary,
 				Description: slugDescription(operation.Description),
 
-				Method:     method,
-				RequestUri: requestUri,
+				method:     method,
+				requestUri: requestUri,
 
-				PathParameters:  pathParameters,
-				QueryParameters: queryParameters,
-				Schema:          g.mapSchema(schemaId),
+				pathParameters:  pathParameters,
+				queryParameters: queryParameters,
+				schemaId:        schemaId,
 			})
 		}
 	}
@@ -339,52 +279,54 @@ func (g generator) mapOperations() []VueOperation {
 	return results
 }
 
-func (g generator) mapSchema(id string) *VueSchema {
-	if id == "" {
-		return nil
-	}
-
+func (g generator) mapSchema(id string) VueSchema {
 	schema, ok := g.openApi.Components.Schemas[id]
 	if !ok {
 		log.Fatalf("schema %s: unknown", id)
 	}
 
-	var properties []VueProperty
+	var properties []VueSchema
 
 	for propertyName, property := range schema.Properties {
-		var (
-			schemaId string
-			items    *VueProperty
-		)
+		propertyType := property.Type
+		if id == "CreateProcessCmd" && propertyName == "bpmnXml" {
+			propertyType = "file"
+		}
 
-		if property.Type == "array" {
+		vueSchema := VueSchema{
+			Name:        propertyName,
+			Required:    slices.Contains(schema.Required, propertyName),
+			Description: slugDescription(property.Description),
+			Type:        propertyType,
+			Format:      property.Format,
+		}
+
+		switch property.Type {
+		case "array":
 			if property.Items.Reference != "" {
-				schemaId = extractId(property.Items.Reference)
+				referenceId := extractId(property.Items.Reference)
+				referenceSchema := g.mapSchema(referenceId)
+
+				vueSchema.Items = &referenceSchema
 			} else {
-				items = &VueProperty{
+				vueSchema.Items = &VueSchema{
 					Type:   property.Items.Type,
 					Format: property.Items.Format,
 				}
 			}
-		} else if property.Type == "" {
-			property.Type = "object"
-			schemaId = extractId(property.Reference)
+		case "":
+			referenceId := extractId(property.Reference)
+			referenceSchema := g.mapSchema(referenceId)
+
+			vueSchema.Type = "object"
+			vueSchema.Description = referenceSchema.Description
+			vueSchema.Properties = referenceSchema.Properties
 		}
 
-		properties = append(properties, VueProperty{
-			Name:        propertyName,
-			Required:    slices.Contains(schema.Required, propertyName),
-			Description: slugDescription(property.Description),
-			Type:        property.Type,
-			Format:      property.Format,
-
-			SchemaId: schemaId,
-
-			Items: items,
-		})
+		properties = append(properties, vueSchema)
 	}
 
-	slices.SortFunc(properties, func(a VueProperty, b VueProperty) int {
+	slices.SortFunc(properties, func(a VueSchema, b VueSchema) int {
 		if a.Name == "partition" {
 			return -1
 		}
@@ -401,8 +343,7 @@ func (g generator) mapSchema(id string) *VueSchema {
 		return strings.Compare(a.Name, b.Name)
 	})
 
-	return &VueSchema{
-		Id:          id,
+	return VueSchema{
 		Description: slugDescription(schema.Description),
 		Type:        schema.Type,
 
@@ -419,121 +360,6 @@ func extractId(reference string) string {
 
 	// e.g. CreateProcessCmd
 	return reference[a+1:]
-}
-
-func getDefaultValue(valueType string) string {
-	switch valueType {
-	case "array":
-		return "[]"
-	case "boolean":
-		return "false"
-	case "integer":
-		return "0"
-	case "object":
-		return "{}"
-	default:
-		return "\"\""
-	}
-}
-
-func getPlaceholder(valueType string, format string) string {
-	switch valueType {
-	case "string":
-		if format == "date" {
-			return time.DateOnly
-		}
-		if format == "date-time" {
-			return time.RFC3339
-		}
-	case "integer":
-		return "0"
-	}
-	return ""
-}
-
-func getSchemaImports(schema *VueSchema) []VueImport {
-	importMap := make(map[string]string)
-
-	if schema.Type == "string" {
-		name := "StringProperty"
-		importMap[name] = "../" + name
-	}
-
-	for _, property := range schema.Properties {
-		switch property.Type {
-		case "string", "integer":
-			name := "StringProperty"
-			importMap[name] = "../" + name
-
-			if property.Name == "bpmnXml" {
-				name := "FileProperty"
-				importMap[name] = "../" + name
-			}
-		case "array":
-			if property.SchemaId != "" {
-				name := property.SchemaId + "List"
-				importMap[name] = "./" + name
-			} else {
-				name := "StringListProperty"
-				importMap[name] = "../" + name
-			}
-		case "boolean":
-			name := "BooleanProperty"
-			importMap[name] = "../" + name
-		case "object":
-			name := property.SchemaId
-			importMap[name] = "./" + name
-		default:
-			log.Printf("schema %s: unsupported import %s\n", schema.Id, property.Name)
-		}
-	}
-
-	imports := make([]VueImport, 0, len(importMap))
-	for name, path := range importMap {
-		imports = append(imports, VueImport{
-			Name: name,
-			Path: path,
-		})
-	}
-
-	slices.SortFunc(imports, func(a VueImport, b VueImport) int {
-		return strings.Compare(a.Name, b.Name)
-	})
-
-	return imports
-}
-
-func getOperationImports(operation VueOperation) []VueImport {
-	importMap := make(map[string]string)
-
-	for _, parameter := range operation.PathParameters {
-		switch parameter.Type {
-		case "string", "integer":
-			name := "StringProperty"
-			importMap[name] = "../" + name
-		default:
-			log.Printf("operation %s: unsupported import %s\n", operation.Id, parameter.Name)
-		}
-	}
-
-	if operation.Schema != nil {
-		name := operation.Schema.Id
-		importMap[name] = "../schema/" + name
-	}
-
-	imports := make([]VueImport, 0, len(importMap))
-	for name, path := range importMap {
-		imports = append(imports, VueImport{
-			Name: name,
-			Path: path,
-		})
-	}
-
-	slices.SortFunc(imports, func(a VueImport, b VueImport) int {
-		return strings.Compare(a.Name, b.Name)
-	})
-
-	return imports
 }
 
 func slugDescription(description string) string {
@@ -645,12 +471,12 @@ type VueOperation struct {
 	Name        string
 	Description string
 
-	Method     string
-	RequestUri string
+	method     string
+	requestUri string
 
-	PathParameters  []VueParameter
-	QueryParameters []VueParameter
-	Schema          *VueSchema
+	pathParameters  []VueParameter
+	queryParameters []VueParameter
+	schemaId        string
 }
 
 type VueParameter struct {
@@ -661,27 +487,25 @@ type VueParameter struct {
 	Format      string
 }
 
+type VueDefinition struct {
+	Id         string `json:"id"`
+	Method     string `json:"method"`
+	RequestUri string `json:"requestUri"`
+
+	Properties []VueSchema `json:"properties"`
+}
+
 type VueSchema struct {
-	Id          string
-	Description string
-	Type        string
+	Name        string `json:"name,omitempty"`
+	Required    bool   `json:"required,omitempty"`
+	Description string `json:"description,omitempty"`
+	Type        string `json:"type"`
+	Format      string `json:"format,omitempty"`
 
-	Properties []VueProperty
-}
+	Properties []VueSchema `json:"properties,omitempty"`
 
-type VueProperty struct {
-	Name        string
-	Required    bool
-	Description string
-	Type        string
-	Format      string
+	Items *VueSchema `json:"items,omitempty"`
 
-	SchemaId string
-
-	Items *VueProperty
-}
-
-type VueImport struct {
-	Name string
-	Path string
+	InPath  bool `json:"inPath,omitempty"`
+	InQuery bool `json:"inQuery,omitempty"`
 }

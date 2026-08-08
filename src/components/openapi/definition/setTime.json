@@ -1,0 +1,23 @@
+{
+  "id": "setTime",
+  "method": "PATCH",
+  "requestUri": "/time",
+  "properties": [
+    {
+      "name": "time",
+      "description": "A future point in time.",
+      "type": "string",
+      "format": "date-time"
+    },
+    {
+      "name": "timeCycle",
+      "description": "CRON expression, when evaluated the next tick specifies the engine's new time.",
+      "type": "string"
+    },
+    {
+      "name": "timeDuration",
+      "description": "Duration, used to calculate a future point in time.",
+      "type": "string"
+    }
+  ]
+}

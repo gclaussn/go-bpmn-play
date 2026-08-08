@@ -1,0 +1,37 @@
+{
+  "id": "queryMessages",
+  "method": "POST",
+  "requestUri": "/messages/query",
+  "properties": [
+    {
+      "name": "id",
+      "description": "Message filter.",
+      "type": "integer",
+      "format": "int64"
+    },
+    {
+      "name": "excludeExpired",
+      "description": "Determines if expired messages are returned.",
+      "type": "boolean"
+    },
+    {
+      "name": "name",
+      "description": "Message name filter.",
+      "type": "string"
+    },
+    {
+      "name": "offset",
+      "description": "The number of results to skip, before returning any result. If offset is \u003ccode class='description-code'\u003e0\u003c/code\u003e, no results are skipped.",
+      "type": "integer",
+      "format": "int32",
+      "inQuery": true
+    },
+    {
+      "name": "limit",
+      "description": "Maximum number of results to return. If limit is \u003ccode class='description-code'\u003e0\u003c/code\u003e, all results are returned.",
+      "type": "integer",
+      "format": "int32",
+      "inQuery": true
+    }
+  ]
+}
