@@ -206,14 +206,14 @@ func (g generator) mapOperations() []VueOperation {
 			}
 
 			var method string
-			switch {
-			case operation.Id == path.Get.Id:
+			switch operation.Id {
+			case path.Get.Id:
 				method = "GET"
-			case operation.Id == path.Patch.Id:
+			case path.Patch.Id:
 				method = "PATCH"
-			case operation.Id == path.Post.Id:
+			case path.Post.Id:
 				method = "POST"
-			case operation.Id == path.Put.Id:
+			case path.Put.Id:
 				method = "PUT"
 			default:
 				log.Fatalf("operation %s: unknown method", operation.Id)
@@ -257,10 +257,11 @@ func (g generator) mapOperations() []VueOperation {
 			}
 
 			results = append(results, VueOperation{
-				Id:          operation.Id,
-				Component:   strings.ToUpper(operation.Id[:1]) + operation.Id[1:],
-				Name:        operation.Summary,
-				Description: slugDescription(operation.Description),
+				Id:               operation.Id,
+				Component:        strings.ToUpper(operation.Id[:1]) + operation.Id[1:],
+				Name:             operation.Summary,
+				Description:      slugDescription(operation.Description),
+				ShortDescription: extractShortDescription(operation.Description),
 
 				method:     method,
 				requestUri: requestUri,
@@ -370,10 +371,23 @@ func extractId(reference string) string {
 	return reference[a+1:]
 }
 
+func extractShortDescription(description string) string {
+	a := strings.Index(description, "\n")
+	if a == -1 {
+		return description
+	}
+	return description[:a]
+}
+
 func slugDescription(description string) string {
 	var sb strings.Builder
 
-	var code bool
+	var (
+		bold         bool
+		boldCount    int
+		code         bool
+		newLineCount int
+	)
 	for _, r := range strings.TrimSpace(description) {
 		switch r {
 		case '`':
@@ -385,9 +399,27 @@ func slugDescription(description string) string {
 				code = true
 			}
 		case '\n':
-			sb.WriteString("<br />")
+			if newLineCount < 2 {
+				sb.WriteString("<br />")
+			}
+			newLineCount++
+		case '*':
+			boldCount++
+
+			if boldCount == 2 {
+				if bold {
+					sb.WriteString("</b>")
+					bold = false
+				} else {
+					bold = true
+					sb.WriteString("<b>")
+				}
+			}
 		default:
 			sb.WriteRune(r)
+
+			boldCount = 0
+			newLineCount = 0
 		}
 	}
 
@@ -474,10 +506,11 @@ type Schema struct {
 // Vue
 
 type VueOperation struct {
-	Id          string
-	Component   string
-	Name        string
-	Description string
+	Id               string
+	Component        string
+	Name             string
+	ShortDescription string
+	Description      string
 
 	method     string
 	requestUri string

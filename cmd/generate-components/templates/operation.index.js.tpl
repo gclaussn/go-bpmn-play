@@ -9,6 +9,12 @@ export const components = {
 {{- end}}
 }
 
+export const shortDescriptions = {
+{{- range $operation := .operations}}
+  {{$operation.Component}}: "{{$operation.ShortDescription}}",
+{{- end}}
+}
+
 export const descriptions = {
 {{- range $operation := .operations}}
   {{$operation.Component}}: "{{$operation.Description}}",

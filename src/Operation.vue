@@ -8,7 +8,7 @@ import PlayRequest from "./PlayRequest.vue"
 import PlayResponse from "./PlayResponse.vue"
 import TabButton from "./components/TabButton.vue"
 
-import { components, descriptions, names } from "./components/openapi/operation/index.js"
+import { components, shortDescriptions, names } from "./components/openapi/operation/index.js"
 
 // determines if the operation form is disabled
 const formDisabled = ref(false)
@@ -112,7 +112,7 @@ const operation = computed(() => {
 
     <h2 class="mb-4 text-center text-2xl">{{ names[operation.component] }}</h2>
 
-    <div class="block mb-2 text-gray-700 text-center whitespace-pre-wrap" v-html="descriptions[operation.component]" />
+    <div class="block mb-2 text-gray-700 text-center whitespace-pre-wrap" v-html="shortDescriptions[operation.component]" />
 
     <div v-if="tab == 'form'">
       <component
