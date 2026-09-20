@@ -346,6 +346,11 @@ function _newData(component) {
       partition: partition,
       engineId: "default-engine"
     }
+  } else if (component == "UpdateUserTask") {
+    return {
+      partition: partition,
+      workerId: "play"
+    }
   } else {
     return {}
   }

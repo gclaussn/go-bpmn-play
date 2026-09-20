@@ -29,7 +29,7 @@
     },
     {
       "name": "taskId",
-      "description": "Process filter.",
+      "description": "Task filter.",
       "type": "integer",
       "format": "int32"
     },

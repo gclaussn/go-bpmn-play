@@ -20,6 +20,12 @@
       "inPath": true
     },
     {
+      "name": "excludeParentVariables",
+      "description": "Determines if variables of direct or indirect parent element instances are not returned.",
+      "type": "boolean",
+      "inQuery": true
+    },
+    {
       "name": "names",
       "description": "Comma separated list of variables to include.",
       "type": "string",

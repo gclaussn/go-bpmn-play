@@ -11,12 +11,12 @@
     },
     {
       "name": "correlationKey",
-      "description": "Message correlation key.",
+      "description": "Message correlation key filter.",
       "type": "string"
     },
     {
       "name": "name",
-      "description": "Message name.",
+      "description": "Message name filter.",
       "type": "string"
     },
     {

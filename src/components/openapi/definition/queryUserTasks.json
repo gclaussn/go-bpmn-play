@@ -1,7 +1,7 @@
 {
-  "id": "queryTasks",
+  "id": "queryUserTasks",
   "method": "POST",
-  "requestUri": "/tasks/query",
+  "requestUri": "/user-tasks/query",
   "properties": [
     {
       "name": "partition",
@@ -11,13 +11,7 @@
     },
     {
       "name": "id",
-      "description": "Task filter.",
-      "type": "integer",
-      "format": "int32"
-    },
-    {
-      "name": "elementId",
-      "description": "Element filter.",
+      "description": "User task filter.",
       "type": "integer",
       "format": "int32"
     },
@@ -40,9 +34,26 @@
       "format": "int32"
     },
     {
-      "name": "type",
-      "description": "TaskType describes the different types of tasks, an engine needs to execute.\u003cbr /\u003e\u003cbr /\u003eManagement related types (e.g. creating a partition or purging expired messages) are only relevant for a pg engine.",
-      "type": "object"
+      "name": "tags",
+      "description": "Tags, a user task must have, to be included.",
+      "type": "array",
+      "items": {
+        "description": "Tag is used to tag processes, process instances and user tasks.",
+        "type": "object",
+        "properties": [
+          {
+            "name": "name",
+            "required": true,
+            "description": "Tag name.",
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "description": "Tag value.",
+            "type": "string"
+          }
+        ]
+      }
     },
     {
       "name": "offset",

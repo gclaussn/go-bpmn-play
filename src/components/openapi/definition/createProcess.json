@@ -116,7 +116,7 @@
       "description": "Tags.",
       "type": "array",
       "items": {
-        "description": "Tag is used to tag entities like process or process instance.",
+        "description": "Tag is used to tag processes, process instances and user tasks.",
         "type": "object",
         "properties": [
           {
@@ -127,7 +127,6 @@
           },
           {
             "name": "value",
-            "required": true,
             "description": "Tag value.",
             "type": "string"
           }

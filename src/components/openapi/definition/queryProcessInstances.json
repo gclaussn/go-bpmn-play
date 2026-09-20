@@ -29,7 +29,7 @@
     },
     {
       "name": "rootId",
-      "description": "Filter, used to query process instances descending from a root process instance (which is included)",
+      "description": "Filter, used to query process instances descending from a root process instance, which itself is included in the query results.",
       "type": "integer",
       "format": "int32"
     },
@@ -38,7 +38,7 @@
       "description": "Tags, a process instance must have, to be included.",
       "type": "array",
       "items": {
-        "description": "Tag is used to tag entities like process or process instance.",
+        "description": "Tag is used to tag processes, process instances and user tasks.",
         "type": "object",
         "properties": [
           {
@@ -49,7 +49,6 @@
           },
           {
             "name": "value",
-            "required": true,
             "description": "Tag value.",
             "type": "string"
           }

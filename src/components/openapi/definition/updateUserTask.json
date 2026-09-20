@@ -1,0 +1,160 @@
+{
+  "id": "updateUserTask",
+  "method": "PATCH",
+  "requestUri": "/user-tasks/{partition}/{id}",
+  "properties": [
+    {
+      "name": "partition",
+      "required": true,
+      "description": "User task partition.",
+      "type": "string",
+      "format": "date",
+      "inPath": true
+    },
+    {
+      "name": "id",
+      "required": true,
+      "description": "User task ID.",
+      "type": "integer",
+      "format": "int32",
+      "inPath": true
+    },
+    {
+      "name": "revision",
+      "required": true,
+      "description": "User task revision that should be updated.",
+      "type": "integer",
+      "format": "int32"
+    },
+    {
+      "name": "completed",
+      "description": "Determines if a user task is completed and the execution is continued.",
+      "type": "boolean"
+    },
+    {
+      "name": "elementVariables",
+      "description": "Variables to set or delete at element instance scope. For a variable deletion, no data must be provided.",
+      "type": "array",
+      "items": {
+        "description": "ElementVariable represents a variable at element instance scope.",
+        "type": "object",
+        "properties": [
+          {
+            "name": "bpmnElementId",
+            "description": "ID of the BPMN element, the variable is set at.",
+            "type": "string"
+          },
+          {
+            "name": "data",
+            "description": "Data is used to store any data within an engine.",
+            "type": "object",
+            "properties": [
+              {
+                "name": "encoding",
+                "required": true,
+                "description": "Encoding of the value - e.g. \u003ccode class='description-code'\u003ejson\u003c/code\u003e.",
+                "type": "string"
+              },
+              {
+                "name": "encrypted",
+                "description": "Determines if a value is encrypted before it is stored.",
+                "type": "boolean"
+              },
+              {
+                "name": "value",
+                "required": true,
+                "description": "Value, encoded as a string.",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "name",
+            "required": true,
+            "description": "Variable name.",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "errorCode",
+      "description": "Code of a BPMN error, used to throw an error.",
+      "type": "string"
+    },
+    {
+      "name": "escalationCode",
+      "description": "Code of a BPMN escalation, used to escalate a user task.",
+      "type": "string"
+    },
+    {
+      "name": "processVariables",
+      "description": "Variables to set or delete at process instance scope. For a variable deletion, no data must be provided.",
+      "type": "array",
+      "items": {
+        "description": "ProcessVariable represents a variable at process instance scope.",
+        "type": "object",
+        "properties": [
+          {
+            "name": "data",
+            "description": "Data is used to store any data within an engine.",
+            "type": "object",
+            "properties": [
+              {
+                "name": "encoding",
+                "required": true,
+                "description": "Encoding of the value - e.g. \u003ccode class='description-code'\u003ejson\u003c/code\u003e.",
+                "type": "string"
+              },
+              {
+                "name": "encrypted",
+                "description": "Determines if a value is encrypted before it is stored.",
+                "type": "boolean"
+              },
+              {
+                "name": "value",
+                "required": true,
+                "description": "Value, encoded as a string.",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "name",
+            "required": true,
+            "description": "Variable name.",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tags",
+      "description": "Tags. For a tag deletion, no value must be provided.",
+      "type": "array",
+      "items": {
+        "description": "Tag is used to tag processes, process instances and user tasks.",
+        "type": "object",
+        "properties": [
+          {
+            "name": "name",
+            "required": true,
+            "description": "Tag name.",
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "description": "Tag value.",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "workerId",
+      "required": true,
+      "description": "ID of the worker that updated the user task.",
+      "type": "string"
+    }
+  ]
+}

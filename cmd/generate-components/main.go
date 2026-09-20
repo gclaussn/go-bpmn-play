@@ -340,6 +340,14 @@ func (g generator) mapSchema(id string) VueSchema {
 			return 1
 		}
 
+		// updateUserTask
+		if a.Name == "revision" {
+			return -1
+		}
+		if b.Name == "revision" {
+			return 1
+		}
+
 		return strings.Compare(a.Name, b.Name)
 	})
 

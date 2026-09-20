@@ -40,7 +40,7 @@
     },
     {
       "name": "uniqueKey",
-      "description": "Optional key that uniquely identifies the message. If a message with the same name, correlation key and unique key already exists, the message is discarded.",
+      "description": "Optional key that uniquely identifies the message. If a message with the same name, correlation key and unique key exists, the message is discarded.",
       "type": "string"
     },
     {
@@ -48,7 +48,7 @@
       "description": "Variables to set or delete at process instance scope. For a variable deletion, no data must be provided.",
       "type": "array",
       "items": {
-        "description": "VariableData represents a named variable, including data.",
+        "description": "ProcessVariable represents a variable at process instance scope.",
         "type": "object",
         "properties": [
           {

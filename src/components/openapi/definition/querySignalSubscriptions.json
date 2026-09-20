@@ -11,7 +11,7 @@
     },
     {
       "name": "name",
-      "description": "Signal name.",
+      "description": "Signal name filter.",
       "type": "string"
     },
     {

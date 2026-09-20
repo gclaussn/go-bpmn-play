@@ -19,7 +19,7 @@
       "description": "Tags.",
       "type": "array",
       "items": {
-        "description": "Tag is used to tag entities like process or process instance.",
+        "description": "Tag is used to tag processes, process instances and user tasks.",
         "type": "object",
         "properties": [
           {
@@ -30,7 +30,6 @@
           },
           {
             "name": "value",
-            "required": true,
             "description": "Tag value.",
             "type": "string"
           }
@@ -42,7 +41,7 @@
       "description": "Variables to set at process instance scope.",
       "type": "array",
       "items": {
-        "description": "VariableData represents a named variable, including data.",
+        "description": "ProcessVariable represents a variable at process instance scope.",
         "type": "object",
         "properties": [
           {
